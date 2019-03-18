@@ -1,0 +1,28 @@
+- name: 创建docker配置目录
+  file: name=/etc/docker state=directory
+
+- name: 分发docker配置文件
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+
+- include_tasks: centos.yml
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: 检查补全脚本存在否
+  stat: path=/etc/bash_completion.d/docker
+  register: check_completion_files
+
+- name: 设置docker命令补全脚本
+  copy: 
+    src: /usr/share/bash-completion/completions/docker
+    dest: /etc/bash_completion.d/docker
+    remote_src: true
+  when: not check_completion_files.stat.exists
+
+- name: 设置开机并启动docker
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+

@@ -1,0 +1,13 @@
+- name: 安装haproxy 
+  yum: name=haproxy  state=latest
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: 安装haproxy
+  package: name=haproxy  state=latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: 配置haproxy
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+  

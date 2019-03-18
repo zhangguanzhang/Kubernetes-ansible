@@ -1,0 +1,7 @@
+---
+- hosts: Allnode
+  roles:
+    - setup
+  tags:
+    - setup
+

@@ -1,0 +1,15 @@
+- name: 安装keepalived
+  yum: name=keepalived  state=latest
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: 安装keepavlied
+  package: name=keepalived  state=latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: 配置keepalived
+  template:
+    src: "{{ item }}"
+    dest: /etc/keepalived/{{ item.split('.')[:-1]|join('.') }}
+  with_items:
+    - keepalived.conf.j2
+    - check_haproxy.sh.j2

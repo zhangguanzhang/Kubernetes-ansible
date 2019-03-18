@@ -1,0 +1,51 @@
+- block:
+    - name: 渲染kube-flannel.yml文件模板
+      template: src={{ item }} dest=/etc/kubernetes/CoreAddons/{{ item.split('.')[:-1]|join('.') }}
+      with_items:
+        - 'kube-flannel.yml.j2'
+    
+    - name: 部署flannel
+      command: kubectl apply -f /etc/kubernetes/CoreAddons/kube-flannel.yml
+  delegate_to: "{{ groups['master'][0] }}"
+  run_once: true
+  when: not flanneld_bin
+
+
+- block:
+    - name: 创建相关目录
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /etc/cni/net.d
+        - /run/flannel
+        - /etc/kube-flannel/
+    
+    - name: 分发flanneld二进制文件
+      copy: 
+        src: /usr/local/bin/flanneld
+        dest: /usr/local/bin/flanneld
+        mode: u+x
+    
+      
+    - name: 生成flanneld的kubeconfig
+      script: files/flannelkubeconfig.sh {{ KUBE_APISERVER }}
+      args:
+        executable: bash
+      connection: local
+    
+    - name: 分发flanneld.kubeconfig
+      copy:
+        src: /etc/kubernetes/flanneld.kubeconfig
+        dest: /etc/kubernetes/flanneld.kubeconfig
+    
+    
+    - template: src={{ item.src }} dest={{ item.dest }}/{{ item.src.split('.')[:-1]|join('.') }}
+      with_items:
+        - { src: 'flanneld.service.j2', dest: '/usr/lib/systemd/system' }
+        - { src: '10-flannel.conflist.j2', dest: '/etc/cni/net.d' }
+        - { src: 'net-conf.json.j2', dest: '/etc/kube-flannel' }
+    
+    - name: 开机并启动flanneld
+      systemd: name=flanneld state=restarted enabled=yes daemon_reload=yes
+  when: flanneld_bin

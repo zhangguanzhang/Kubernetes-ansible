@@ -1,0 +1,33 @@
+- block:
+    - name: 设置hostname
+      hostname: name={{ hostname }}
+
+    - name: 安装ntp
+      yum: 
+        name: 
+          - ntp
+        state: latest
+      when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+    
+    - name: 安装ntp
+      package: name=ntp  state=latest
+      when: ansible_distribution == "Ubuntu"
+    
+    
+    - name: 分发ntp配置文件
+      template:
+        src: "{{ inventory_dir }}/roles/setup/templates/ntp.conf.j2"
+        dest: /etc/ntp.conf
+    
+    - name: enable --now ntp
+      systemd:
+        name: ntpd
+        state: restarted
+        enabled: yes
+
+  when: groups['etcd'] | intersect(groups['master']) | length == 0
+
+- include_tasks: etcd.yml
+
+- name: 渲染etcd.sh到/etc/profile.d/
+  template: src=etcd.sh.j2 dest=/etc/profile.d/etcd.sh

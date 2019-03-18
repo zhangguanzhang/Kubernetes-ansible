@@ -1,0 +1,29 @@
+driftfile  /var/lib/ntp/drift
+pidfile    /var/run/ntpd.pid
+logfile    /var/log/ntp.log
+
+
+# Access Control Support
+restrict    default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
+restrict 127.0.0.1
+restrict 192.168.0.0 mask 255.255.0.0 nomodify notrap nopeer noquery
+restrict 172.16.0.0 mask 255.240.0.0 nomodify notrap nopeer noquery
+restrict 100.64.0.0 mask 255.192.0.0 nomodify notrap nopeer noquery
+restrict 10.0.0.0 mask 255.0.0.0 nomodify notrap nopeer noquery
+
+
+# local clock
+server 127.127.1.0
+fudge  127.127.1.0 stratum 10
+
+
+restrict {{ ntp_domain1 }} notrap nopeer noquery
+{% if ntp_domain2 %}
+restrict {{ ntp_domain2 }} nomodify notrap nopeer noquery
+{% endif %}
+
+server {{ ntp_domain1 }} iburst minpoll 4 maxpoll 10
+{% if ntp_domain2 %}
+server {{ ntp_domain2 }} iburst minpoll 4 maxpoll 10
+{% endif %}

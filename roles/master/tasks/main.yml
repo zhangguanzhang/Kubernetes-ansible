@@ -1,0 +1,34 @@
+- include_tasks: master.yml
+  when: inventory_hostname in groups['master']
+
+
+
+- name: 测试apiserver端口
+  uri: 
+    url: https://{{ groups['master'][0] }}:6443/healthz
+    validate_certs: no
+    return_content: yes
+  register: this
+  until: "'ok' in this.content"
+  retries: 10
+  delay: 4
+  connection: local
+  ignore_errors: True
+
+
+- name: 等待kubectl能操作集群
+  shell: kubectl get cs
+  register: waiting_for_cluster
+  until: waiting_for_cluster.rc == 0 and waiting_for_cluster.stdout.find("Unhealthy") == -1
+  retries: 10
+  delay: 5
+  changed_when: false
+  ignore_errors: true
+  run_once: true
+  delegate_to: "{{ groups['master'][0] }}"
+
+#- name: 修改kubernetes ep
+#  shell: |
+#    kubectl patch ep kubernetes -p '{"subsets": [{"addresses":[{"ip":"{{ VIP }}"}],"ports":[{"name":"https","port":8443,"protocol":"TCP"}]}]}'
+#  when: groups['master'] | length  != 1
+#  connection: local

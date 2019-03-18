@@ -1,0 +1,5 @@
+---
+- hosts: Newnode
+  roles:
+    - addNode
+    

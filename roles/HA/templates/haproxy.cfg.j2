@@ -1,0 +1,48 @@
+global
+  maxconn  2000
+  ulimit-n  16384
+  log  127.0.0.1 local0 err
+  stats timeout 30s
+
+defaults
+  log global
+  mode  http
+  option  httplog
+  timeout connect 5000
+  timeout client  50000
+  timeout server  50000
+  timeout http-request 15s
+  timeout http-keep-alive 15s
+
+frontend monitor-in
+  bind *:33305
+  mode http
+  option httplog
+  monitor-uri /monitor
+
+listen stats
+  bind    *:8006
+  mode    http
+  stats   enable
+  stats   hide-version
+  stats   uri       /stats
+  stats   refresh   30s
+  stats   realm     Haproxy\ Statistics
+  stats   auth      admin:admin
+
+frontend k8s-api
+  bind 0.0.0.0:8443
+  bind 127.0.0.1:8443
+  mode tcp
+  option tcplog
+  tcp-request inspect-delay 5s
+  default_backend k8s-api
+
+backend k8s-api
+  mode tcp
+  option tcplog
+  option tcp-check
+  balance roundrobin
+  default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 weight 100
+{% for host in groups['master'] %}    server  api{{ loop.index }}  {{ hostvars[host].inventory_hostname }}:6443  check inter 2000 fall 2 rise 2 weight 1
+{% endfor %}

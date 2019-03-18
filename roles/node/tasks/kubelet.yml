@@ -1,0 +1,45 @@
+- name: 创建相关目录
+  file: name={{ item }} state=directory
+  with_items:
+    - /etc/kubernetes/pki
+    - /etc/kubernetes/manifests
+    - /var/lib/kubelet/
+    - /opt/cni/bin/
+
+- name: 分发cni二进制文件
+  unarchive:
+    src: "{{ item }}"
+    dest: /opt/cni/bin/
+    mode: u+x
+  with_fileglob:
+    - "{{ inventory_dir }}/cni-plugins-amd64*.tgz"
+
+- name: 分发Kubelet二进制文件
+  copy:
+    src: "{{ item }}"
+    dest: "{{ item }}"
+    mode: u+x
+  with_items:
+    - /usr/local/bin/kubelet
+   
+- name: 配置kubelet
+  template: src={{ item.src }} dest={{ item.dest }}/{{ item.src.split('.')[:-1]|join('.') }}
+  with_items:
+    - { src: 'kubelet.service.j2', dest: "/lib/systemd/system/" }
+    - { src: 'kubelet-conf.yml.j2', dest: "/etc/kubernetes/" }
+
+- name: 分发kubelet相关证书
+  copy: src={{ item }} dest={{ item }}
+  with_items:
+    - /etc/kubernetes/pki/ca.crt
+    - /etc/kubernetes/bootstrap.kubeconfig
+
+- name: 开机并启动kubelet
+  systemd: name=kubelet state=started enabled=yes daemon_reload=yes
+  
+- name: 请给master节点上的kubelet打污点
+  debug: 
+    msg: |
+      kubectl  taint nodes {% for host in groups['master'] %}{{ hostvars[host].ansible_hostname }} {% endfor %}  node-role.kubernetes.io/master="":NoSchedule
+  connection: local
+  run_once: true

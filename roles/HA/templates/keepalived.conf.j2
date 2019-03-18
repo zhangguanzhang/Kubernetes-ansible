@@ -1,0 +1,29 @@
+vrrp_script haproxy-check {
+    script "/bin/bash /etc/keepalived/check_haproxy.sh"
+    interval 3
+    weight -2
+    fall 10
+    rise 2
+}
+
+vrrp_instance haproxy-vip {
+    state BACKUP
+    priority 101
+    interface {{ INTERFACE_NAME }}
+    virtual_router_id 47
+    advert_int 3
+
+    unicast_peer {
+{% for host in groups['master'] %}
+        {{ host }}
+{% endfor %}
+    }
+
+    virtual_ipaddress {
+        {{ VIP }}/{{ VIP_NETMASK }}
+    }
+
+    track_script {
+        haproxy-check
+    }
+}

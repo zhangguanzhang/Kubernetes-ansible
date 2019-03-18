@@ -1,0 +1,56 @@
+- include_tasks: centos.yml
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+- name: 设置系统时区
+  timezone:
+    name: "{{ TimeZone }}"
+  when: TimeZone is defined
+
+- name: 修改fstab文件关闭swap
+  lineinfile:
+    dest: /root/fstab     
+    regexp: "(^\s*[^#].+swap)"
+    line: '#\1'
+    backrefs: yes
+
+- name: 分发modules-load和sysctl的conf
+  copy:
+    src: files/{{ item.src }}
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: 'k8s-ipvs.conf', dest: "/etc/modules-load.d/" }
+    - { src: 'k8s-sysctl.conf', dest: "/etc/sysctl.d/" }
+    - { src: 'kubernetes.conf', dest: "/etc/security/limits.d/" }
+
+- name: enable --now systemd-modules-load
+  systemd:
+    name: systemd-modules-load
+    state: started
+    enabled: yes
+
+- name: 分发ntp配置文件
+  template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+
+- name: 设置ntp开机并启动
+  systemd: name=ntpd enabled=yes
+
+- name: prepare some dirs
+  file: name={{ item }} state=directory
+  with_items:
+  - /etc/kubernetes/pki
+  - /etc/kubernetes/manifests
+  - /var/log/kubernetes
+  - /var/lib/kubelet
+
+- name: 设置hostname
+  hostname: name={{ hostname }}
+
+- name: Reboot host
+  shell: sleep 2 && shutdown -r now "reboot"
+  async: 1
+  poll: 0
+  ignore_errors: yes
+  tags:
+    - reboot

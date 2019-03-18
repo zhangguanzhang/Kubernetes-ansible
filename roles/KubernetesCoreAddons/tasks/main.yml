@@ -1,0 +1,34 @@
+- file:
+    path: /etc/kubernetes/CoreAddons
+    state: directory
+  tags:
+    - kube-proxy
+
+- include: kube-proxy.yml
+  tags:
+    - kube-proxy
+
+- include: flanneld.yml
+  when: Net_Choose is defined and Net_Choose == 'flannel'
+  tags:
+    - flanneld
+
+- name: 渲染coredns,metrics-server文件模板
+  template: src={{ item }} dest=/etc/kubernetes/CoreAddons/{{ item.split('.')[:-1]|join('.') }}
+  with_items:
+    - 'coredns.yml.j2'
+    - 'metrics-server.yml.j2'
+  tags:
+    - core
+  delegate_to: "{{ groups['master'][0] }}"
+
+- name: 部署coredns,metrics-server
+  command: kubectl apply -f /etc/kubernetes/CoreAddons/{{ item }}
+  with_items:
+    - 'coredns.yml'
+    - 'metrics-server.yml'
+  delegate_to: "{{ groups['master'][0] }}"
+  run_once: true
+  tags:
+    - core
+

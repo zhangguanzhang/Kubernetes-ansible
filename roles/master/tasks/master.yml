@@ -1,0 +1,82 @@
+- name: 创建相关目录
+  file: name={{ item }} state=directory
+  with_items:
+    - /etc/kubernetes/pki/etcd
+    - ~/.kube/
+
+- block:
+    - name: 分发etcdctl到master成员
+      copy: src=/usr/local/bin/etcdctl dest=/usr/local/bin/etcdctl mode=u+x
+    
+    - name: etcd非master上跑时分发etcd证书到master成员
+      copy: src={{ item }} dest=/etc/kubernetes/pki/etcd/
+      with_fileglob:
+        - '/etc/kubernetes/pki/etcd/*'
+
+    - name: 渲染etcd.sh到/etc/profile.d/
+      template: src="{{ inventory_dir }}/roles/etcd/templates/etcd.sh.j2" dest=/etc/profile.d/etcd.sh
+  when: groups['etcd'] | intersect(groups['master']) | length == 0
+
+
+
+- name: 分发证书
+  copy: src={{ item }} dest=/etc/kubernetes/pki/
+  with_fileglob:
+    - '/etc/kubernetes/pki/*'
+
+- name: 配置管理组件的systemd文件
+  template: src={{ item }} dest=/usr/lib/systemd/system/{{ item.split('.')[:-1]|join('.') }}
+  with_items:
+    - kube-apiserver.service.j2
+    - kube-controller-manager.service.j2
+    - kube-scheduler.service.j2
+
+- name: 分发管理组件的kubeconfig
+  copy: src=/etc/kubernetes/{{ item }} dest=/etc/kubernetes/
+  with_items:
+    - admin.kubeconfig
+    - controller-manager.kubeconfig
+    - scheduler.kubeconfig
+  
+- name: 分发管理组件二进制文件
+  copy:
+    src: "{{ item }}"
+    dest: "{{ item }}"
+    mode: u+x
+  with_items:
+    - /usr/local/bin/kube-apiserver
+    - /usr/local/bin/kube-controller-manager
+    - /usr/local/bin/kube-scheduler
+    - /usr/local/bin/kubectl
+
+#- name: 设置kubectl的kubeconfig
+#  file: 
+#    src: /etc/kubernetes/admin.kubeconfig
+#    dest: ~/.kube/config
+#    state: hard
+#    force: true
+
+
+# 当运行剧本的机器不是master的时候让能操作集群
+- file: name=~/.kube state=directory
+  connection: local
+- copy: src=/etc/kubernetes/admin.kubeconfig dest=~/.kube/config remote_src=true
+  connection: local
+
+- name: 设置kubectl的kubeconfig
+  copy:
+    src: /etc/kubernetes/admin.kubeconfig
+    dest: ~/.kube/config
+    remote_src: true
+
+- name: 设置kubectl
+  shell: |
+    kubectl completion bash > /etc/bash_completion.d/kubectl
+
+- name: 启动管理组件
+  systemd: name={{ item }} state=restarted enabled=yes daemon_reload=yes
+  with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+

@@ -1,0 +1,23 @@
+- file: name=/etc/kubernetes/pki/etcd state=directory
+  connection: local
+
+- name: 渲染ip到openssl配置文件
+  template: src=templates/openssl.cnf.j2 dest=/etc/kubernetes/pki/openssl.cnf
+  connection: local
+
+
+- name: 生成kubeconfig
+  include_tasks: 
+    file: tls.yml
+    apply:
+      connection: local
+  run_once: true
+
+
+- name: 生成kubeconfig
+  include_tasks: 
+    file: kubeconfig.yml
+    apply:
+      connection: local
+  run_once: true
+    

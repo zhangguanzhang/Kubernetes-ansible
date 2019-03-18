@@ -1,0 +1,8 @@
+- include_tasks: centos.yml
+  when: (ansible_distribution == "CentOS" or ansible_distribution == "RedHat") and inventory_hostname in groups['newNode']
+  tags:
+    - setup
+- include: addNode.yml
+  when: inventory_hostname in groups['newNode']
+  tags:
+    - addNode

@@ -1,0 +1,14 @@
+- name: 添加docker-ce的repo文件
+  copy: src=files/docker-ce.repo dest=/etc/yum.repos.d/
+
+- shell: |
+    yum list --showduplicates 'docker-ce' | awk  '/'{{ docker_version }}'.*el/{a=$2}END{print a}'
+  register: docker-ce
+  run_once: true
+  delegate_to: "{{ groups['master'][0] }}"
+  args:
+    warn: false
+
+- name: 安装docker-ce
+  yum:
+    name: docker-ce-{{ docker_ce.stdout }}

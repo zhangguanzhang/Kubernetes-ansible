@@ -1,0 +1,42 @@
+- name: 创建etcd相关目录
+  file: 
+    name: "{{ item }}"
+    state: directory
+  with_items:
+  - /etc/kubernetes/pki/etcd
+  - /var/lib/etcd
+  - /etc/etcd
+
+- name: 分发etcd二进制文件
+  copy:
+    src: "{{ item }}"
+    dest: "{{ item }}"
+    mode: u+x
+  with_items:
+    - /usr/local/bin/etcd
+    - /usr/local/bin/etcdctl
+
+- name: 分发etcd systemd文件
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+  - { src: '/usr/local/bin/etcd', dest: '/usr/local/bin/etcd' }
+  - { src: '/usr/local/bin/etcdctl', dest: '/usr/local/bin/etcdctl' }
+  
+- name: 分发etcd证书
+  copy: src={{ item }} dest=/etc/kubernetes/pki/etcd/
+  with_fileglob:
+    - '/etc/kubernetes/pki/etcd/*'
+
+- template: src=templates/{{ item.src }} dest={{ item.dest }}/{{ item.src.split('.')[:-1]|join('.') }}
+  with_items:
+  - { src: 'etcd.config.yml.j2', dest: '/etc/etcd' }
+  - { src: 'etcd.service.j2', dest: '/usr/lib/systemd/system' }
+
+- name: 启动etcd并设置成开机启动
+  systemd:
+    name: etcd 
+    state: restarted 
+    enabled: yes 
+    daemon_reload: yes
