@@ -8,10 +8,11 @@
 
 - name: 修改fstab文件关闭swap
   lineinfile:
-    dest: /root/fstab     
-    regexp: "(^\s*[^#].+swap)"
+    dest: /etc/fstab     
+    regexp: "(^\\s*[^#].+swap)"
     line: '#\1'
     backrefs: yes
+  when: not swap
 
 - name: 分发modules-load和sysctl的conf
   copy:
@@ -19,8 +20,12 @@
     dest: "{{ item.dest }}"
   with_items:
     - { src: 'k8s-ipvs.conf', dest: "/etc/modules-load.d/" }
-    - { src: 'k8s-sysctl.conf', dest: "/etc/sysctl.d/" }
     - { src: 'kubernetes.conf', dest: "/etc/security/limits.d/" }
+
+- name: 分发sysctl文件
+  template:
+    src: k8s-sysctl.conf.j2
+    dest: /etc/sysctl.d/
 
 - name: enable --now systemd-modules-load
   systemd:

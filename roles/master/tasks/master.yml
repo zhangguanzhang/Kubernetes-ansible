@@ -4,6 +4,14 @@
     - /etc/kubernetes/pki/etcd
     - ~/.kube/
 
+- name: 创建log相关目录
+  file: name={{ log_dir }}/{{ item }} state=directory
+  with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+  when: k8s_log
+
 - block:
     - name: 分发etcdctl到master成员
       copy: src=/usr/local/bin/etcdctl dest=/usr/local/bin/etcdctl mode=u+x

@@ -1,5 +1,6 @@
-address: {{ inventory_hostname }}
+kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
+address: {{ inventory_hostname }}
 authentication:
   anonymous:
     enabled: false
@@ -38,7 +39,9 @@ evictionHard:
   nodefs.available: 10%
   nodefs.inodesFree: 5%
 evictionPressureTransitionPeriod: 5m0s
-failSwapOn: true
+failSwapOn: {% if swap is defined and swap %}false
+{% else%}true
+{% endif %}
 fileCheckFrequency: 20s
 hairpinMode: promiscuous-bridge
 healthzBindAddress: {{ inventory_hostname }}
@@ -49,7 +52,6 @@ imageGCLowThresholdPercent: 80
 imageMinimumGCAge: 2m0s
 iptablesDropBit: 15
 iptablesMasqueradeBit: 14
-kind: KubeletConfiguration
 kubeAPIBurst: 10
 kubeAPIQPS: 5
 makeIPTablesUtilChains: true

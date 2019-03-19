@@ -7,6 +7,7 @@ ntp_domain1: 'cn.pool.ntp.org'
 ntp_domain2: 's1b.time.edu.cn'
 TimeZone: 'Asia/Shanghai'
 kernel: true
+swap: false #false关闭swap,为true不关闭swap
 
 VIP: '172.16.1.240'
 VIP_NETMASK: 24
@@ -18,6 +19,7 @@ ClusterDns: 10.96.0.10  #修改SvcCIDR的画确保它的ip在CIDR内
 PodCIDR: 10.244.0.0/16
 ServiceNodePortRange: 30000-32767
 ClusterDomain: cluster.local
+proxy_mode: ipvs
 
 #terminatedPodGcThreshold: 12500 #退出pod多少秒删除,默认12500
 
@@ -43,7 +45,9 @@ flannel_img: v0.11.0-amd64
 # or set the value to 'host-gw'
 flannel_type: vxlan
 flanneld_healthz_port: 8471
-
+flanneld_log_dir: /var/log/flanneld
 
 infra_image: 'registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1'
 KUBE_APISERVER: https://{% if groups['master'] | length !=1 %}{{ VIP }}:8443{% else %}{{ hostvars[groups['master'][0]].inventory_hostname }}:6443{% endif %}
+k8s_log: true # 所有组件是否开启log文件记录
+log_dir: /var/log/kubernetes

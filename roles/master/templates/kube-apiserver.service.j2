@@ -44,6 +44,10 @@ ExecStart=/usr/local/bin/kube-apiserver \
   --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt \
   --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client.key \
   --feature-gates=PodShareProcessNamespace=true \
+{% if k8s_log is defined and k8s_log %}
+  --logtostderr=false \
+  --log-dir={{ log_dir }}/kube-apiserver \
+{% endif %}
   --v=2
 
 Restart=on-failure

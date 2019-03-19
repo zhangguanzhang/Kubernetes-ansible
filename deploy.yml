@@ -5,12 +5,13 @@
   - stat:
       path: /usr/bin/docker
     register: docker_cmd
+    tags:
+      - docker
   - include_role:
-      name : docker
-      apply:
-        tags: 
-          - docker
+      name: docker
     when: not docker_cmd.stat.exists
+    tags:
+      - docker
 
 # down_file
 

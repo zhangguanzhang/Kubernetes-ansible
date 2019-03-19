@@ -8,6 +8,10 @@ ExecStart=/usr/local/bin/kube-scheduler \
   --leader-elect=true \
   --kubeconfig=/etc/kubernetes/scheduler.kubeconfig \
   --address=127.0.0.1 \
+{% if k8s_log is defined and k8s_log %}
+  --logtostderr=false \
+  --log-dir={{ log_dir }}/kube-scheduler \
+{% endif %}
   --v=2
 Restart=always
 RestartSec=10s

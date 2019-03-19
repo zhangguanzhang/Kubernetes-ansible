@@ -29,7 +29,7 @@ ipvs:
     syncPeriod: 30s
 kind: KubeProxyConfiguration
 metricsBindAddress: {{ inventory_hostname }}:10249
-mode: "ipvs"
+mode: {% if proxy_mode is defined and proxy_mode == 'iptables' %}"iptables"{% else %}"ipvs"{% endif %}
 nodePortAddresses: null
 oomScoreAdj: -999
 portRange: ""

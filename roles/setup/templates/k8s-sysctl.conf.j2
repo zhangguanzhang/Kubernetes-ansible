@@ -26,6 +26,8 @@ fs.may_detach_mounts = 1
 fs.file-max = 52706963
 fs.nr_open = 52706963
 net.bridge.bridge-nf-call-arptables = 1
+{% if swap is defined and not swap %}
 vm.swappiness = 0
+{% endif %}
 vm.overcommit_memory=1
 vm.panic_on_oom=0
