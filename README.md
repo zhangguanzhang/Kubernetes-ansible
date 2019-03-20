@@ -113,7 +113,7 @@ cd Kubernetes-ansible
  7. 运行下`ansible all -m ping`测试连通性
 ----------
 
-**3 开始运行安装，下面是用法**
+**3 开始运行安装，下面是用法(小白用法)**
  * -----   setup.yml     -------
  * setup: 机器设置(关闭swap安装一些依赖+ntp)+内核升级并重启,例如`ansible-playbook setup.yml`,带上`-e 'kernel=false'`不会升级内核.如果是升级了内核,那重新连上后再`ansible all -m ping`看看连通性
  * -----    deploy.yml   -------
@@ -126,6 +126,9 @@ cd Kubernetes-ansible
  * bootstrap: 给kubelet注册用
  * node: kubelet
  * addon: kube-proxy,flannel,coredns.metrics-server flannel二进制跑请运行前下载二进制文件`bash get-binaries.sh flanneld`,否则提前拉取镜像使用命令拉取`ansible Allnode -m shell -a 'curl -s https://zhangguanzhang.github.io/bash/pull.sh | bash -s -- quay.io/coreos/flannel:v0.11.0-amd64'`
+
+**4 勇者玩法**
+ * setup后执行`ansible-playbook deploy.yml --tags docker`然后运行脚本`bash get-binaries.sh all`确认下载完后运行`ansible-playbook deploy.yml --skip-tags docker`
 
 运行方式为下面,xxx为上面标签
 ansible-playbook deploy.yml --tags xxx  
@@ -155,7 +158,7 @@ kubectl label node ${node_name} node-role.kubernetes.io/node=""
 
 ![k8s](https://raw.githubusercontent.com/zhangguanzhang/Image-Hosting/master/k8s/kube-ansible.png)
 
-**4 后续添加Node节点**
+**5 后续添加Node节点**
  1. 在当前的ansible目录改hosts,添加[newNode]分组写上成员和信息,role是复用的,所以不要在此时修改一些标志位参数,例如flanneld.type和bin
  2. 执行`ansible-playbook setup.yml -e 'run=newNode'`,此时也可以带上`-e kernel=false`不升级内核,然后等待重启完可以ping通后执行`ansible-playbook addNode.yml`
  3. 然后查看是否添加上
