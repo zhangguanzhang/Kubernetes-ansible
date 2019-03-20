@@ -11,7 +11,7 @@
 
 ## ansible部署Kubernetes
 
-系统可采用`Ubuntu 16.x`与`CentOS 7.x`(CentOS建议使用最新的)
+系统可采用`Ubuntu 16.x`(未完成)与`CentOS 7.x`(CentOS建议使用最新的)
 本次安裝的版本：
 > * Kubernetes v1.13.4 (HA高可用)
 > * CNI plugins v0.7.1
@@ -41,7 +41,7 @@
 
 # 使用前提和注意事项
 > * 每台主机端口和密码最好一致(不一致最好懂点ansible修改hosts文件)
-
+> * 单master也可以玩
 
 # 使用(在master1的主机上使用且master1安装了ansible,剧本也可以支持非部署的机器运行剧本)
 

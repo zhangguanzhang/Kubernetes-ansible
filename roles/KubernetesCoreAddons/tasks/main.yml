@@ -19,7 +19,6 @@
       with_items:
         - 'coredns.yml.j2'
         - 'metrics-server.yml.j2'
-      delegate_to: "{{ groups['master'] }}"
  
     - name: 部署coredns,metrics-server
       command: kubectl apply -f /etc/kubernetes/CoreAddons/{{ item }}
