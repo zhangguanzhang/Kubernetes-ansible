@@ -3,11 +3,11 @@
 ## 全部重构,步骤和kubeadm一样,九成九配置文件和路径一样,管理组件扣成了systemd二进制,并且强制bind网卡支持多网卡部署和更细的配置
 
 ## 更新
- * 2018/06/08 - 解决2.5.3的ansible使用脚本报错
  * 2018/06/09 - 添加增加node剧本
  * 2019/03/08 - 推倒重来,仿照kubeadm,但是支持多网卡下部署,etcd支持单独的机器跑
  * 2019/03/14 - 修复setup里yum cache报错,优化etcd非master成员场景下的逻辑
  * 2019/03/18 - 改善未在fstab关闭swap和模板渲染回车问题,增加更多可选设置参数
+ * 2019/03/20 - 增加管理组件可选日志写入文件和logrotate配置,添加增加node剧本
 
 ## ansible部署Kubernetes
 
@@ -34,10 +34,10 @@
 | IP    | Hostname   |  CPU  |   Memory | 
 | :----- |  :----:  | :----:  |  :----:  |
 | 172.16.1.3 |k8s-m1|  2   |   2G    |
-| 172.16.1.6 |k8s-m2|  2   |   2G    |
-| 172.16.1.10 |k8s-m3|  2   |   2G    |
-| 172.16.1.15 |k8s-n1|  2   |   2G    |
-| 172.16.1.19 |k8s-n1|  2   |   2G    |
+| 172.16.1.4 |k8s-m2|  2   |   2G    |
+| 172.16.1.5 |k8s-m3|  2   |   2G    |
+| 172.16.1.6 |k8s-n1|  2   |   2G    |
+| 172.16.1.7 |k8s-n1|  2   |   2G    |
 
 # 使用前提和注意事项
 > * 每台主机端口和密码最好一致(不一致最好懂点ansible修改hosts文件)
@@ -45,7 +45,7 @@
 
 # 使用(在master1的主机上使用且master1安装了ansible,剧本也可以支持非部署的机器运行剧本)
 
-centos通过yum安装ansible或者pip
+centos通过yum或者pip安装最新版ansible(role的一些写法依赖较版本的ansible)
 ```
 #可以yum安装指定版本或者离线安装 yum install -y  https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.7.8-1.el7.ans.noarch.rpm
 yum install -y wget epel-release && yum install -y python-pip git sshpass
@@ -73,7 +73,7 @@ cd Kubernetes-ansible
  * 修改`group_vars/all.yml`里面的参数
  1. ansible_ssh_pass为ssh密码(如果每台主机密码不一致请注释掉`all.yml`里的`ansible_ssh_pass`后按照的`hosts`文件里的注释那样写上每台主机的密码）
  2. `VIP`为高可用HA的虚ip,和master在同一个网段没有被使用过的ip即可,`NETMASK`为VIP的掩码
- 3. `INTERFACE_NAME`为各机器的ip所在网卡名字Centos可能是`ens33`或`eth0`,如果业务做了bond是bond后的网卡,看情况自行修改.测试vip可用度是某台机器手动添加`ip addr add $VIP/$MASK dev $interface`后其他机器手动ping下
+ 3. `INTERFACE_NAME`为各机器的ip所在网卡名字Centos可能是`ens33`或`eth0`,如果业务做了bond是bond后的网卡,看情况自行修改.测试vip可用度是某台机器手动添加`ip addr add/del $VIP/$MASK dev $interface`后其他机器手动ping下
  4. 其余的参数按需修改,不熟悉最好别乱改
  5. 涉及到一些集群更新状态的参数参考 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/kubernetes-reliability.md 
  6. `nodeStatusUpdate`变量对应下面的三种+默认值任选其一,单独选项的值优先级高`nodeStatusUpdate`,
@@ -155,18 +155,18 @@ kubectl label node ${node_name} node-role.kubernetes.io/node=""
 
 ![k8s](https://raw.githubusercontent.com/zhangguanzhang/Image-Hosting/master/k8s/kube-ansible.png)
 
-**4 后续添加Node节点(未完成)**
- 1. 在当前的ansible目录改hosts,添加[newNode]分组写上成员
- 2. 后执行以下命令添加node
+**4 后续添加Node节点**
+ 1. 在当前的ansible目录改hosts,添加[newNode]分组写上成员和信息,role是复用的,所以不要在此时修改一些标志位参数,例如flanneld.type和bin
+ 2. 执行`ansible-playbook setup.yml -e 'run=newNode'`,此时也可以带上`-e kernel=false`不升级内核,然后等待重启完可以ping通后执行`ansible-playbook addNode.yml`
  3. 然后查看是否添加上
 ```
 $ kubectl get node -o wide
 NAME     STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION              CONTAINER-RUNTIME
-k8s-m1   Ready    <none>   27h   v1.13.4   172.16.1.4    <none>        CentOS Linux 7 (Core)   5.0.0-2.el7.elrepo.x86_64   docker://18.6.3
-k8s-m2   Ready    <none>   27h   v1.13.4   172.16.1.5    <none>        CentOS Linux 7 (Core)   5.0.0-2.el7.elrepo.x86_64   docker://18.6.3
-k8s-m3   Ready    <none>   27h   v1.13.4   172.16.1.8    <none>        CentOS Linux 7 (Core)   5.0.0-2.el7.elrepo.x86_64   docker://18.6.3
-k8s-n1   Ready    <none>   27h   v1.13.4   172.16.1.12   <none>        CentOS Linux 7 (Core)   5.0.0-2.el7.elrepo.x86_64   docker://18.6.3
-k8s-n2   Ready    <none>   27h   v1.13.4   172.16.1.13   <none>        CentOS Linux 7 (Core)   5.0.0-2.el7.elrepo.x86_64   docker://18.6.3
+k8s-m1   Ready    <none>   28m   v1.13.4   172.16.1.3    <none>        CentOS Linux 7 (Core)   5.0.3-1.el7.elrepo.x86_64   docker://18.6.3
+k8s-m2   Ready    <none>   28m   v1.13.4   172.16.1.4    <none>        CentOS Linux 7 (Core)   5.0.3-1.el7.elrepo.x86_64   docker://18.6.3
+k8s-m3   Ready    <none>   28m   v1.13.4   172.16.1.5    <none>        CentOS Linux 7 (Core)   5.0.3-1.el7.elrepo.x86_64   docker://18.6.3
+k8s-n1   Ready    <none>   28m   v1.13.4   172.16.1.6    <none>        CentOS Linux 7 (Core)   5.0.3-1.el7.elrepo.x86_64   docker://18.6.3
+k8s-n2   Ready    <none>   6s    v1.13.4   172.16.1.7    <none>        CentOS Linux 7 (Core)   5.0.3-1.el7.elrepo.x86_64   docker://18.6.3
 ```
 
 后面的一些Extraaddon后续更新

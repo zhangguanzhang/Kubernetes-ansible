@@ -46,7 +46,7 @@ ExecStart=/usr/local/bin/kube-apiserver \
   --feature-gates=PodShareProcessNamespace=true \
 {% if k8s_log is defined and k8s_log %}
   --logtostderr=false \
-  --log-dir={{ log_dir }}/kube-apiserver \
+  --log-dir={{ log.apiserver.dir }}/kube-apiserver \
 {% endif %}
   --v=2
 

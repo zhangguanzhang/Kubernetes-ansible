@@ -23,5 +23,5 @@ ExecStart=/usr/local/bin/flanneld \
   --iface={{ INTERFACE_NAME }} \
   --public-ip {{ inventory_hostname }} \
   --healthz-ip {{ inventory_hostname }} \
-  --healthz-port {{ flanneld_healthz_port }} \
+  --healthz-port {{ flanneld.healthzPort }} \
   --v=2 

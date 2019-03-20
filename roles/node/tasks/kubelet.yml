@@ -40,6 +40,6 @@
 - name: 请给master节点上的kubelet打污点
   debug: 
     msg: |
-      kubectl  taint nodes {% for host in groups['master'] %}{{ hostvars[host].ansible_hostname }} {% endfor %}  node-role.kubernetes.io/master="":NoSchedule
+      kubectl  taint nodes {% for host in groups['master'] %}{{ hostvars[host].nodename }} {% endfor %}  node-role.kubernetes.io/master="":NoSchedule
   connection: local
-  run_once: true
+  when: not ( newNode | default(false) )

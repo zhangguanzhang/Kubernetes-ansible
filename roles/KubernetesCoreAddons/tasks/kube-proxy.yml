@@ -7,7 +7,7 @@
     - command: kubectl apply -f /etc/kubernetes/CoreAddons/kube-proxy.yml
       when: not kube_proxy_bin
       delegate_to: "{{ groups['master'][0] }}"
-  when: not kube_proxy_bin
+  when: not kube_proxy_bin and ( not newNode | default('false') )
 
 - block:
     - name: 部署Kube-proxy
@@ -16,13 +16,24 @@
         dest: /usr/local/bin/kube-proxy
         mode: u+x
     
+    - stat: 
+        path: /etc/kubernetes/kube-proxy.kubeconfig
+      register: kubeproxy_file
+
     - name: 生成kube-proxy的kubeconfig并配置
       script: files/kubeconfig.sh {{ KUBE_APISERVER }}
       args:
         executable: bash
       connection: local
-    #  run_once: true
+      when: not kubeproxy_file.stat.exists
     
+    - name: 创建目录{{log.proxy.dir}}/logrotate
+      file: name={{log.proxy.dir}}/logrotate state=directory
+      when: k8s_log
+    - name: 分发logrotate配置文件
+      template: src={{log.proxy.file}} dest=/etc/logrotate.d/{{log.proxy.file.split('/')[-1]}}
+      when: k8s_log
+
     - name: 分发kube-proxy.kubeconfig
       copy:
         src: /etc/kubernetes/kube-proxy.kubeconfig

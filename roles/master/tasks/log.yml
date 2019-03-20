@@ -1,0 +1,9 @@
+- name: 创建组件目录{{ out_item.value.dir }}
+  file: name={{item}}/logrotate state=directory
+  with_items: "{{out_item.value.dir }}"
+  when: out_item.key != 'proxy'
+
+- name: 渲染logrotate文件{{ out_item.value.file }}
+  template: src=templates/{{item}} dest=/etc/logrotate.d/{{ item.split('/')[-1] }}
+  with_items: "{{out_item.value.file}}"
+  when: out_item.key != 'proxy'

@@ -1,0 +1,9 @@
+{{ log.proxy.dir }}/kube-proxy.*.log.* {
+    olddir {{ log.proxy.dir }}/logrotate
+    rotate {{ log.proxy.rotate }}
+    size {{ log.proxy.size }}
+    missingok
+    compress
+    nodelaycompress
+    copytruncate
+}

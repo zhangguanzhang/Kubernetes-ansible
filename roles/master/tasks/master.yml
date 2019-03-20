@@ -1,15 +1,14 @@
-- name: 创建相关目录
+- name: 创建证书,kubeconfig目录
   file: name={{ item }} state=directory
   with_items:
     - /etc/kubernetes/pki/etcd
     - ~/.kube/
 
 - name: 创建log相关目录
-  file: name={{ log_dir }}/{{ item }} state=directory
-  with_items:
-    - kube-apiserver
-    - kube-controller-manager
-    - kube-scheduler
+  include_tasks: log.yml
+  with_dict: "{{ log }}"
+  loop_control:
+    loop_var: out_item
   when: k8s_log
 
 - block:
@@ -56,13 +55,6 @@
     - /usr/local/bin/kube-controller-manager
     - /usr/local/bin/kube-scheduler
     - /usr/local/bin/kubectl
-
-#- name: 设置kubectl的kubeconfig
-#  file: 
-#    src: /etc/kubernetes/admin.kubeconfig
-#    dest: ~/.kube/config
-#    state: hard
-#    force: true
 
 
 # 当运行剧本的机器不是master的时候让能操作集群

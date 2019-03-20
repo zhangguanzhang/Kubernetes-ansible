@@ -66,7 +66,7 @@ ExecStart=/usr/local/bin/kube-controller-manager \
 {%- endif %} \
 {% if k8s_log is defined and k8s_log %}
   --logtostderr=false \
-  --log-dir={{ log_dir }}/kube-controller-manager \
+  --log-dir={{ log.controllerManager.dir }}/kube-controller-manager \
 {% endif %}
   --v=2
 

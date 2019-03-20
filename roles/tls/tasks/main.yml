@@ -1,23 +1,18 @@
+- stat:
+    path: /usr/local/bin/kubectl
+  register: kubectl_file
+- fail: msg='请下载文件,运行脚本`bash get-binaries.sh all`或者自行下载后再运行deploy.yml'
+  when: not kubectl_file.stat.exists
+
 - file: name=/etc/kubernetes/pki/etcd state=directory
-  connection: local
 
 - name: 渲染ip到openssl配置文件
   template: src=templates/openssl.cnf.j2 dest=/etc/kubernetes/pki/openssl.cnf
-  connection: local
-
 
 - name: 生成kubeconfig
   include_tasks: 
     file: tls.yml
-    apply:
-      connection: local
-  run_once: true
-
 
 - name: 生成kubeconfig
   include_tasks: 
     file: kubeconfig.yml
-    apply:
-      connection: local
-  run_once: true
-    

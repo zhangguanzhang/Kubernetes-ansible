@@ -126,7 +126,7 @@ data:
     {
       "Network": "{{ PodCIDR }}",
       "Backend": {
-        "Type": "{{ flannel_type }}"
+        "Type": "{{ flanneld.type }}"
       }
     }
 ---
@@ -154,7 +154,7 @@ spec:
       serviceAccountName: flannel
       initContainers:
       - name: install-cni
-        image: quay.io/coreos/flannel:{{ flannel_img }}
+        image: {{ flanneld.img }}
         command:
         - cp
         args:
@@ -168,7 +168,7 @@ spec:
           mountPath: /etc/kube-flannel/
       containers:
       - name: kube-flannel
-        image: quay.io/coreos/flannel:{{ flannel_img }}
+        image: {{ flanneld.img }}
         command:
         - /opt/bin/flanneld
         args:

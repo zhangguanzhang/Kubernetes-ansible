@@ -1,5 +1,6 @@
 ---
-- hosts: Allnode
+- hosts: "{{ run | default('Allnode')}}"
+  gather_facts: yes
   roles:
     - setup
   tags:

@@ -8,7 +8,10 @@
     tags:
       - docker
   - include_role:
-      name: docker
+      name : docker
+      apply:
+        tags: 
+          - docker
     when: not docker_cmd.stat.exists
     tags:
       - docker

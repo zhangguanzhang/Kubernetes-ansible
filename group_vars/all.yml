@@ -37,17 +37,37 @@ KUBE_VERSION: 'v1.13.4'
 ETCD_version: 'v3.3.12'
 # 是否使用二进制
 kube_proxy_bin: true 
-flanneld_bin: true
 
 Net_Choose: flannel  # 暂时只有flannel,后续增加其他的
 
-flannel_img: v0.11.0-amd64
-# or set the value to 'host-gw'
-flannel_type: vxlan
-flanneld_healthz_port: 8471
-flanneld_log_dir: /var/log/flanneld
+flanneld:
+  img: quay.io/coreos/flannel:v0.11.0-amd64
+  bin: true
+  type: vxlan # or set the value to 'host-gw'
+  healthzPort: 8471
+  logDir: /var/log/flanneld
 
 infra_image: 'registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.1'
 KUBE_APISERVER: https://{% if groups['master'] | length !=1 %}{{ VIP }}:8443{% else %}{{ hostvars[groups['master'][0]].inventory_hostname }}:6443{% endif %}
 k8s_log: true # 所有组件是否开启log文件记录
-log_dir: /var/log/kubernetes
+log:
+  apiserver:
+    file: logrotate/kube-apiserver
+    dir: /var/log/kubernetes/kube-apiserver
+    size: 200M
+    rotate: 7
+  controllerManager:
+    file: logrotate/kube-controller-manager
+    dir: /var/log/kubernetes/kube-controller-manager
+    size: 200M
+    rotate: 7
+  scheduler:
+    file: logrotate/kube-scheduler
+    dir: /var/log/kubernetes/kube-scheduler
+    size: 200M
+    rotate: 7
+  proxy:
+    file: logrotate/kube-proxy
+    dir: /var/log/kubernetes/kube-proxy
+    size: 200M
+    rotate: 7

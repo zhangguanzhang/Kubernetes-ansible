@@ -21,8 +21,9 @@ function down_etcd(){
 
 function down_flanneld(){
 # https://github.com/coreos/flannel/releases
-    wget https://github.com/coreos/flannel/releases/download/${FLANNEL_version}/flannel-${FLANNEL_version}-linux-amd64.tar.gz
-    tar -zxvf flannel-${FLANNEL_version}-linux-amd64.tar.gz -C /usr/local/bin flanneld
+    [ ! -f "flannel-${FLANNEL_version}-linux-amd64.tar.gz" ] && \
+        wget https://github.com/coreos/flannel/releases/download/${FLANNEL_version}/flannel-${FLANNEL_version}-linux-amd64.tar.gz
+    [ ! -f /usr/local/bin/flanneld ] && tar -zxvf flannel-${FLANNEL_version}-linux-amd64.tar.gz -C /usr/local/bin flanneld
 }
 
 function down_cni(){

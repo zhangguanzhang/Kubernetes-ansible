@@ -1,20 +1,20 @@
 [master]
 172.16.1.3 hostname=k8s-m1 nodename=k8s-m1
-172.16.1.6 hostname=k8s-m2 nodename=k8s-m2
-172.16.1.10 hostname=k8s-m3 nodename=k8s-m3
+172.16.1.4 hostname=k8s-m2 nodename=k8s-m2
+172.16.1.5 hostname=k8s-m3 nodename=k8s-m3
 
 [node]
-172.16.1.15 hostname=k8s-n1 nodename=k8s-n1
-172.16.1.19 hostname=k8s-n2 nodename=k8s-n2
+172.16.1.6 hostname=k8s-n1 nodename=k8s-n1
+172.16.1.7 hostname=k8s-n2 nodename=k8s-n2
 
 [etcd]
 172.16.1.3 
-172.16.1.6
-172.16.1.10
+172.16.1.4
+172.16.1.5
 # etcd单独机器跑的话请配置hostname值,例如下面
 #172.16.1.11 hostname=etcd-01
-#172.16.1.13 hostname=etcd-02
-#172.16.1.17 hostname=etcd-03
+#172.16.1.12 hostname=etcd-02
+#172.16.1.13 hostname=etcd-03
 
 
 
@@ -26,8 +26,8 @@ node
 
 
 #[newNode]
-#192.168.126.10
-#192.168.126.11
+#172.16.1.8 hostname=k8s-n3 nodename=k8s-n3
+#172.16.1.9 hostname=k8s-n4 nodename=k8s-n4
 
 #如果各台密码和端口不通请按照下面格式填写好并注释掉group_vars/all.yml里的ansible_ssh_pass的那一行
 #[Node]

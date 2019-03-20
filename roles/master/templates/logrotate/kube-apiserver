@@ -1,0 +1,9 @@
+{{ log.apiserver.dir }}/kube-apiserver.*.log.* {
+    olddir {{ log.apiserver.dir }}/logrotate
+    rotate {{ log.apiserver.rotate }}
+    size {{ log.apiserver.size }}
+    missingok
+    compress
+    nodelaycompress
+    copytruncate
+}

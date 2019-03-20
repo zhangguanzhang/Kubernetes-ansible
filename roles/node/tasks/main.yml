@@ -1,3 +1,2 @@
 - include_tasks: kubelet.yml
-  when: inventory_hostname in groups['Allnode']
 
