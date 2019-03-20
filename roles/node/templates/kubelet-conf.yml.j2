@@ -40,7 +40,7 @@ evictionHard:
   nodefs.inodesFree: 5%
 evictionPressureTransitionPeriod: 5m0s
 failSwapOn: {% if swap is defined and swap %}false
-{% else%}true
+{% else %}true
 {% endif %}
 fileCheckFrequency: 20s
 hairpinMode: promiscuous-bridge

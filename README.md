@@ -45,7 +45,7 @@
 
 # 使用(在master1的主机上使用且master1安装了ansible,剧本也可以支持非部署的机器运行剧本)
 
-centos通过yum或者pip安装最新版ansible(role的一些写法依赖较版本的ansible)
+centos通过yum或者pip安装最新版ansible(role的一些写法依赖较新版本的ansible)
 ```
 #可以yum安装指定版本或者离线安装 yum install -y  https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.7.8-1.el7.ans.noarch.rpm
 yum install -y wget epel-release && yum install -y python-pip git sshpass
