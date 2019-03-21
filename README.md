@@ -131,9 +131,7 @@ cd Kubernetes-ansible
 **4 勇者玩法**
  * setup后执行`ansible-playbook deploy.yml --tags docker`然后运行脚本`bash get-binaries.sh all`确认下载完后运行`ansible-playbook deploy.yml --skip-tags docker`
 
-运行方式为下面,xxx为上面标签
-ansible-playbook deploy.yml --tags xxx  
-运行到master后查看下管理组件状态
+运行到master后可以查看下管理组件状态
 ```
 $ kubectl get cs
 NAME                 STATUS    MESSAGE              ERROR
