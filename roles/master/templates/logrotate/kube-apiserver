@@ -1,7 +1,7 @@
-{{ log.apiserver.dir }}/kube-apiserver.*.log.* {
-    olddir {{ log.apiserver.dir }}/logrotate
-    rotate {{ log.apiserver.rotate }}
-    size {{ log.apiserver.size }}
+{{ apiserver.logrotate.logDir }}/kube-apiserver.*.log.* {
+    olddir {{ apiserver.logrotate.logDir }}/logrotate
+    rotate {{ apiserver.logrotate.logRotate }}
+    size {{ apiserver.logrotate.logSize }}
     missingok
     compress
     nodelaycompress

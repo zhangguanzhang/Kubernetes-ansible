@@ -2,13 +2,13 @@
   template: src={{ item }} dest=/etc/kubernetes/CoreAddons/{{ item.split('.')[:-1]|join('.') }}
   with_items:
     - kube-proxy.yml.j2
-  when: not kube_proxy_bin
+  when: not proxy.bin
   tags:
     - kube-proxy
     - core
 
 - command: kubectl apply -f /etc/kubernetes/CoreAddons/kube-proxy.yml
-  when: not kube_proxy_bin
+  when: not proxy.bin
   tags:
     - kube-proxy
     - core

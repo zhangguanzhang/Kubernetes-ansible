@@ -4,12 +4,13 @@
     - /etc/kubernetes/pki/etcd
     - ~/.kube/
 
-- name: 创建log相关目录
-  include_tasks: log.yml
-  with_dict: "{{ log }}"
+- include_tasks: newlog.yml
   loop_control:
     loop_var: out_item
-  when: k8s_log
+  with_dict:
+    - "{{ apiserver }}"
+    - "{{ controllerManager }}"
+    - "{{ scheduler }}"
 
 - block:
     - name: 分发etcdctl到master成员

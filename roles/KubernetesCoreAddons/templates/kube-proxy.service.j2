@@ -6,11 +6,11 @@ After=network.target
 [Service]
 ExecStart=/usr/local/bin/kube-proxy \
   --config=/etc/kubernetes/kube-proxy.conf \
-{% if k8s_log is defined and k8s_log and kube_proxy_bin %}
+{% if proxy.logrotate.log is defined and proxy.logrotate.log %}
   --logtostderr=false \
-  --log-dir={{ log.apiserver.dir }}/kube-proxy \
+  --log-dir={{ proxy.logrotate.logDir }} \
 {% endif %}
-  --v=2
+  --v={{ proxy.logLevel | default(2) }}
 
 Restart=always
 RestartSec=10s

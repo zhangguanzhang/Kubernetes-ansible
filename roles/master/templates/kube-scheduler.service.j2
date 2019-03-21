@@ -7,12 +7,12 @@ After=network.target
 ExecStart=/usr/local/bin/kube-scheduler \
   --leader-elect=true \
   --kubeconfig=/etc/kubernetes/scheduler.kubeconfig \
-  --address=127.0.0.1 \
-{% if k8s_log is defined and k8s_log %}
+  --address={{ scheduler.bind }} \
+{% if scheduler.logrotate.log is defined and scheduler.logrotate.log %}
   --logtostderr=false \
-  --log-dir={{ log.scheduler.dir }}/kube-scheduler \
+  --log-dir={{ scheduler.logrotate.logDir }} \
 {% endif %}
-  --v=2
+  --v={{ scheduler.logLevel | default(2)}}
 Restart=always
 RestartSec=10s
 

@@ -24,4 +24,4 @@ ExecStart=/usr/local/bin/flanneld \
   --public-ip {{ inventory_hostname }} \
   --healthz-ip {{ inventory_hostname }} \
   --healthz-port {{ flanneld.healthzPort }} \
-  --v=2 
+  --v={{ flanneld.logLevel | default(2) }}

@@ -37,7 +37,9 @@
       - conntrack
       - libseccomp
       - net-tools
+      - crontabs
       - sysstat
+      - bind-utils
       - ntp
       - wget
       - psmisc

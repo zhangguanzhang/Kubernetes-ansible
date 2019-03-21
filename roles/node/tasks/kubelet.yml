@@ -21,6 +21,15 @@
     mode: u+x
   with_items:
     - /usr/local/bin/kubelet
+
+- name: 创建log目录
+  file: name={{ kubelet.logrotate.logDir }}/logrotate state=directory
+  when: kubelet.logrotate.log is defined and kubelet.logrotate.log 
+
+- name: 渲染kubelet的logrotate配置文件
+  template: src=templates/{{ item }} dest=/etc/logrotate.d/{{ item.split('/')[-1] }}
+  with_items: "{{ kubelet.logrotate.confTemplate }}"
+  when: kubelet.logrotate.log is defined and kubelet.logrotate.log
    
 - name: 配置kubelet
   template: src={{ item.src }} dest={{ item.dest }}/{{ item.src.split('.')[:-1]|join('.') }}
@@ -42,4 +51,5 @@
     msg: |
       kubectl  taint nodes {% for host in groups['master'] %}{{ hostvars[host].nodename }} {% endfor %}  node-role.kubernetes.io/master="":NoSchedule
   connection: local
+  run_once: true
   when: not ( newNode | default(false) )

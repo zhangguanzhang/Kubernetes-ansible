@@ -78,29 +78,3 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 EOF
 
-
-cat <<EOF | kubectl apply -f -
-# A ClusterRole which instructs the CSR approver to approve a user requesting
-# node client credentials.
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: system:certificates.k8s.io:certificatesigningrequests:nodeclient
-rules:
-- apiGroups: ["certificates.k8s.io"]
-  resources: ["certificatesigningrequests/nodeclient"]
-  verbs: ["create"]
----
-# A ClusterRole which instructs the CSR approver to approve a node renewing its
-# own client credentials.
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient
-rules:
-- apiGroups: ["certificates.k8s.io"]
-  resources: ["certificatesigningrequests/selfnodeclient"]
-  verbs: ["create"]
-EOF
-
-

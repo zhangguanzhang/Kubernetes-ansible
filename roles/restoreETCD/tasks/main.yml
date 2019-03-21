@@ -1,0 +1,45 @@
+- block:
+    - fail: msg=请运行的时候传入变量-e 'db=$vars'
+      when: db is undefined 
+    
+    - name: 检测备份文件存在否
+      stat:
+        path: "{{ db }}"
+      register: db_file
+    
+    - fail: msg='备份文件不存在'
+      when: not db_file.stat.exists
+  connection: local
+  run_once: true
+
+- set_fact:
+    clusterName: "{{ ansible_hostname }}"
+  when: clusterName is not defined
+
+- set_fact:
+    init_cluster: "{% for host in groups['etcd'] %}{{ hostvars[host].clusterName }}=https://{{ hostvars[host].inventory_hostname }}:2380{% if not loop.last %},{% endif %}{% endfor %}"
+
+- name: 停止etcd
+  systemd: name=etcd state=stopped
+  ignore_errors: true
+
+- name: 删除etcd数据目录
+  file: name={{ item }} state=absent
+  with_items: "{{ etcd.dataDir }}"
+  ignore_errors: True
+
+
+- name: 分发备份文件
+  copy: src={{ db }} dest=/root/
+
+
+- name: 恢复备份
+  shell: |
+      ETCDCTL_API=3 etcdctl  \
+        --name {{ clusterName }} --initial-advertise-peer-urls https://{{ inventory_hostname }}:2380 \
+        --initial-cluster {{ init_cluster }} \
+        snapshot restore /root/test.db \
+        --data-dir=/var/lib/etcd/
+
+- name: 启动etcd
+  systemd: name=etcd state=started

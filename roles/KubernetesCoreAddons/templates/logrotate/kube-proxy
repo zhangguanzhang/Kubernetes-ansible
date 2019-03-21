@@ -1,7 +1,7 @@
-{{ log.proxy.dir }}/kube-proxy.*.log.* {
-    olddir {{ log.proxy.dir }}/logrotate
-    rotate {{ log.proxy.rotate }}
-    size {{ log.proxy.size }}
+{{ proxy.logrotate.logDir }}/kube-proxy.*.log.* {
+    olddir {{ proxy.logrotate.logDir }}/logrotate
+    rotate {{ proxy.logrotate.logRotate }}
+    size {{ proxy.logrotate.logSize }}
     missingok
     compress
     nodelaycompress

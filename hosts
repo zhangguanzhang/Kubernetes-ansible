@@ -8,13 +8,14 @@
 172.16.1.7 hostname=k8s-n2 nodename=k8s-n2
 
 [etcd]
-172.16.1.3 
-172.16.1.4
-172.16.1.5
-# etcd单独机器跑的话请配置hostname值,例如下面
-#172.16.1.11 hostname=etcd-01
-#172.16.1.12 hostname=etcd-02
-#172.16.1.13 hostname=etcd-03
+172.16.1.3 clusterName=k8s-m1
+172.16.1.4 clusterName=k8s-m2
+172.16.1.5 clusterName=k8s-m3
+# etcd初次集群需要独一名字,如果不设置clusterName默认取值hostname,所以上面和下面可以不设置clusterName
+# etcd单独机器跑的话请参照下面配置,下面俩变量最少有一个
+#172.16.1.11 clusterName=k8s-m1 hostname=etcd-01
+#172.16.1.12 clusterName=k8s-m2 hostname=etcd-02
+#172.16.1.13 clusterName=k8s-m3 hostname=etcd-03
 
 
 
@@ -33,3 +34,16 @@ node
 #[Node]
 #192.168.126.9 ansible_ssh_pass=password ansible_ssh_port=666
 #192.168.126.10 ansible_ssh_pass=password233 ansible_ssh_port=68
+
+
+# 单master下面这样填写即可
+#[master]
+#172.16.1.8 hostname=k8s-m1 nodename=k8s-m1
+#[node]
+#172.16.1.9 hostname=k8s-n1 nodename=k8s-n1
+#172.16.1.13 hostname=k8s-n2 nodename=k8s-n2
+#[etcd]
+#172.16.1.8
+#[Allnode:children]
+#master
+#node

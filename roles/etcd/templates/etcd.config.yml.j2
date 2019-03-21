@@ -1,6 +1,8 @@
-name: '{{ ansible_hostname  }}'
-data-dir: /var/lib/etcd
-wal-dir: /var/lib/etcd/wal
+name: '{{ clusterName  }}'
+data-dir: {{ etcd.dataDir }}
+wal-dir: {{ etcd.dataDir }}/wal
+auto-compaction-mode: periodic
+auto-compaction-retention: "1"
 snapshot-count: 5000
 heartbeat-interval: 100
 election-timeout: 1000
@@ -16,7 +18,7 @@ discovery:
 discovery-fallback: 'proxy'
 discovery-proxy:
 discovery-srv:
-initial-cluster: '{% for host in groups['etcd'] %}{{ hostvars[host].ansible_hostname }}=https://{{ hostvars[host].inventory_hostname }}:2380{% if not loop.last %},{% endif %}{% endfor %}'
+initial-cluster: '{% for host in groups['etcd'] %}{{ hostvars[host].clusterName }}=https://{{ hostvars[host].inventory_hostname }}:2380{% if not loop.last %},{% endif %}{% endfor %}'
 initial-cluster-token: 'etcd-k8s-cluster'
 initial-cluster-state: 'new'
 strict-reconfig-check: false

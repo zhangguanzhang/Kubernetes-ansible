@@ -4,8 +4,13 @@
     state: directory
   with_items:
   - /etc/kubernetes/pki/etcd
-  - /var/lib/etcd
+  - "{{ etcd.dataDir }}"
   - /etc/etcd
+
+- set_fact:
+    clusterName: "{{ ansible_hostname }}"
+  when: clusterName is undefined
+
 
 - name: 分发etcd二进制文件
   copy:

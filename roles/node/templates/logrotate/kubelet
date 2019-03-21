@@ -1,0 +1,9 @@
+{{ kubelet.logrotate.logDir }}/kubelet.*.log.* {
+    olddir {{ kubelet.logrotate.logDir }}/logrotate
+    rotate {{ kubelet.logrotate.logRotate }}
+    size {{ kubelet.logrotate.logSize }}
+    missingok
+    compress
+    nodelaycompress
+    copytruncate
+}

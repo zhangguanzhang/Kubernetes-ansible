@@ -5,9 +5,8 @@
         - kube-proxy.yml.j2
     
     - command: kubectl apply -f /etc/kubernetes/CoreAddons/kube-proxy.yml
-      when: not kube_proxy_bin
       delegate_to: "{{ groups['master'][0] }}"
-  when: not kube_proxy_bin and ( not newNode | default('false') )
+  when: not proxy.bin and ( not newNode | default('false') )
 
 - block:
     - name: 部署Kube-proxy
@@ -27,12 +26,14 @@
       connection: local
       when: not kubeproxy_file.stat.exists
     
-    - name: 创建目录{{log.proxy.dir}}/logrotate
-      file: name={{log.proxy.dir}}/logrotate state=directory
-      when: k8s_log
+    - name: 创建目录{{ proxy.logrotate.logDir }}/logrotate
+      file: name={{ proxy.logrotate.logDir }}/logrotate state=directory
+      when: proxy.logrotate.log is defined and proxy.logrotate.log
+
     - name: 分发logrotate配置文件
-      template: src={{log.proxy.file}} dest=/etc/logrotate.d/{{log.proxy.file.split('/')[-1]}}
-      when: k8s_log
+      template: src={{ item }} dest=/etc/logrotate.d/{{ item.split('/')[-1] }}
+      with_items: "{{ proxy.logrotate.confTemplate }}"
+      when: proxy.logrotate.log is defined and proxy.logrotate.log
 
     - name: 分发kube-proxy.kubeconfig
       copy:
@@ -46,4 +47,4 @@
         - { src: 'kube-proxy.conf.j2', dest: '/etc/kubernetes/' }
     - name: 开机并启动kube-proxy
       systemd: name=kube-proxy state=started enabled=yes daemon_reload=yes
-  when: kube_proxy_bin
+  when: proxy.bin

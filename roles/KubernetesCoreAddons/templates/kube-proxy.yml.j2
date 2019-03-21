@@ -9,7 +9,7 @@ data:
   config.conf: |-
     apiVersion: kubeproxy.config.k8s.io/v1alpha1
     kind: KubeProxyConfiguration
-    bindAddress: {{ inventory_hostname }}
+    bindAddress: 0.0.0.0
     clientConnection:
       acceptContentTypes: ""
       burst: 10
@@ -24,7 +24,7 @@ data:
       tcpCloseWaitTimeout: 1h0m0s
       tcpEstablishedTimeout: 24h0m0s
     enableProfiling: false
-    healthzBindAddress: {{ inventory_hostname }}:10256
+    healthzBindAddress: 0.0.0.0:10256
     hostnameOverride: ""
     iptables:
       masqueradeAll: false
@@ -35,8 +35,8 @@ data:
       minSyncPeriod: 0s
       scheduler: rr
       syncPeriod: 30s
-    metricsBindAddress: {{ inventory_hostname }}:10249
-    mode: {% if proxy_mode is defined and proxy_mode == 'iptables' %}"iptables"{% else %}"ipvs"
+    metricsBindAddress: 127.0.0.1:10249
+    mode: {% if proxy.mode is defined and proxy.mode == 'iptables' %}"iptables"{% else %}"ipvs"
 {% endif %}
     featureGates:
       SupportIPVSProxyMode: true

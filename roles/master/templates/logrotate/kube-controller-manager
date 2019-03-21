@@ -1,7 +1,7 @@
-{{ log.controllerManager.dir }}/kube-controller-manager.*.log.* {
-    olddir {{ log.controllerManager.dir }}/logrotate
-    rotate {{ log.controllerManager.rotate }}
-    size {{ log.controllerManager.size }}
+{{ controllerManager.logrotate.logDir }}/kube-controller-manager.*.log.* {
+    olddir {{ controllerManager.logrotate.logDir }}/logrotate
+    rotate {{ controllerManager.logrotate.logRotate }}
+    size {{ controllerManager.logrotate.logSize }}
     missingok
     compress
     nodelaycompress

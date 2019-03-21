@@ -7,8 +7,8 @@ After=network.target
 ExecStart=/usr/local/bin/kube-apiserver \
   --authorization-mode=Node,RBAC \
   --enable-admission-plugins=Initializers,DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceLifecycle,NodeRestriction,PersistentVolumeClaimResize,ResourceQuota,ServiceAccount,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,Priority \
-  --advertise-address={{ inventory_hostname }} \
-  --bind-address={{ inventory_hostname }}  \
+  --advertise-address={{ apiserver.advertiseAddress }} \
+  --bind-address={{ apiserver.bind }}  \
   --insecure-port=0 \
   --secure-port=6443 \
   --allow-privileged=true \
@@ -44,11 +44,11 @@ ExecStart=/usr/local/bin/kube-apiserver \
   --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt \
   --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client.key \
   --feature-gates=PodShareProcessNamespace=true \
-{% if k8s_log is defined and k8s_log %}
+{% if apiserver.logrotate.log is defined and apiserver.logrotate.log %}
   --logtostderr=false \
-  --log-dir={{ log.apiserver.dir }}/kube-apiserver \
+  --log-dir={{ apiserver.logrotate.logDir }} \
 {% endif %}
-  --v=2
+  --v={{ apiserver.logLevel | default(2)}}
 
 Restart=on-failure
 RestartSec=10s

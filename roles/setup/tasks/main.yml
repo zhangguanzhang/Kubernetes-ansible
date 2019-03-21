@@ -12,7 +12,7 @@
     regexp: "(^\\s*[^#].+swap)"
     line: '#\1'
     backrefs: yes
-  when: not swap
+  when: not kubelet.swap
 
 - name: 分发modules-load和sysctl的conf
   copy:
@@ -38,8 +38,11 @@
     src: ntp.conf.j2
     dest: /etc/ntp.conf
 
-- name: 设置ntp开机并启动
-  systemd: name=ntpd enabled=yes
+- name: 设置ntp,crond开机并启动
+  systemd: name={{ item }} enabled=yes
+  with_items:
+    - ntpd
+    - crond
 
 - name: prepare some dirs
   file: name={{ item }} state=directory
@@ -51,6 +54,7 @@
 
 - name: 设置hostname
   hostname: name={{ hostname }}
+  when: hostname is defined and hostname
 
 - name: Reboot host
   shell: sleep 2 && shutdown -r now "reboot"
