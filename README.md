@@ -173,7 +173,7 @@ k8s-n2   Ready    <none>   6s    v1.13.4   172.16.1.7    <none>        CentOS Li
 
 **6 备份恢复**
  * 把etcdctl和证书复制了单独一台机器上就可以外部操作和备份集群了,etcd备份: `etcd_v3 snapshot save test.db`
- * 备份执行`ansible-playbook test.yml -e 'db=/root/Kubernetes-ansible/test.db'`,db指定db文件在剧本机器的路径
+ * 备份执行`ansible-playbook restoreETCD.yml  -e 'db=/root/Kubernetes-ansible/test.db'`,db指定db文件在剧本机器的路径
  * `etcd_v3 --write-out=table endpoint status`查看状态
 
 ![k8s2](https://raw.githubusercontent.com/zhangguanzhang/Image-Hosting/master/k8s/kube-ansible2.png)
