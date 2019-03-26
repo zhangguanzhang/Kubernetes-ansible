@@ -9,7 +9,6 @@ ExecStart=/usr/local/bin/kubelet \
   --bootstrap-kubeconfig=/etc/kubernetes/bootstrap.kubeconfig \
   --kubeconfig=/etc/kubernetes/kubelet.kubeconfig \
   --config=/etc/kubernetes/kubelet-conf.yml \
-  --cgroup-driver=systemd \
   --hostname-override={{ nodename }} \
   --pod-infra-container-image={{ infra_image }} \
   --allow-privileged=true \
