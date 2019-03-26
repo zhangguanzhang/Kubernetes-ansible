@@ -9,6 +9,7 @@
  * 2019/03/18 - 改善未在fstab关闭swap和模板渲染回车问题,增加更多可选设置参数
  * 2019/03/20 - 增加管理组件可选日志写入文件和logrotate配置,添加增加node剧本
  * 2019/03/21 - 增加有备份db文件下一键恢复etcd集群剧本
+ * 2019/03/26 - 增加etcd备份脚本
 
 ## ansible部署Kubernetes
 
@@ -121,7 +122,7 @@ cd Kubernetes-ansible
  * docker: 安装docker,默认是18.06,其他版本自行修改`group_vars/all.yml`, 运行命令为`ansible-playbook deploy.yml --tags docker`
  * 这步不是标签,手动运行`bash get-binaries.sh all`: 通过docker下载k8s和etcd的二进制文件还有cni插件,觉得不信任可以自己其他方式下载,cni插件可能不好下载.如果是运行剧本机器不是master[0]请自行下载相关文件到`/usr/local/bin`
  * tls: 生成证书和管理组件的kubeconfig,kubeconfig生成依赖kubectl命令,此步确保已经下载有.运行命令为`ansible-playbook deploy.yml --tags tls`,下面的也是tag改tags后面标签为下面的即可
- * etcd: 部署etcd,etcd可以非master上跑,按照提示设置好hosts文件即可,生成alias别名脚本存放在目录`/etc/profile.d/etcd.sh`,命令为`etcd_v2`和`etcd_v3`方便操作etcd
+ * etcd: 部署etcd,etcd可以非master上跑,按照提示设置好hosts文件即可,生成alias别名脚本存放在目录`/etc/profile.d/etcd.sh`,命令为`etcd_v2`和`etcd_v3`方便操作etcd,同时当前目录有etcd_cron.sh生成,可以自行添加到cron上备份,用法-c保留几个备份副本,-d指定备份目录(缺省/root目录)不存在则创建,可以复制证书到其他机器上在其他机器上定时备份
  * HA: keepalived+haproxy
  * master: 管理组件,检测apiserver端口那个`curl -sk https://master[0]:6443/healthz`的uri模块写法不知道是不是没调对经常报错,测试apiserver端口这步会出现带有`...ignoring`报错请忽略,执行完运行下`kubectl get cs`有输出就不用管
  * bootstrap: 给kubelet注册用

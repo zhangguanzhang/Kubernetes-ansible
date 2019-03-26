@@ -39,6 +39,13 @@
   - { src: 'etcd.config.yml.j2', dest: '/etc/etcd' }
   - { src: 'etcd.service.j2', dest: '/usr/lib/systemd/system' }
 
+- name: 渲染etcd备份脚本
+  template: src={{ item.src }} dest={{ item.dest }}/{{ item.src.split('.')[:-1]|join('.') }}
+  with_items:
+  - { src: 'etcd_cron.sh.j2', dest: '{{ inventory_dir }}/'}
+  connection: local
+  run_once: true
+
 - name: 启动etcd并设置成开机启动
   systemd:
     name: etcd 
