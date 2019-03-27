@@ -30,6 +30,11 @@
   template: src=templates/{{ item }} dest=/etc/logrotate.d/{{ item.split('/')[-1] }}
   with_items: "{{ kubelet.logrotate.confTemplate }}"
   when: kubelet.logrotate.log is defined and kubelet.logrotate.log
+
+- name: 获取docker CgroupDriver值
+  shell: |
+      docker info --format '{% raw %}{{.CgroupDriver}}{% endraw %}'
+  register: CgroupDriver
    
 - name: 配置kubelet
   template: src={{ item.src }} dest={{ item.dest }}/{{ item.src.split('.')[:-1]|join('.') }}

@@ -20,7 +20,7 @@ JWT_TOKEN=$(kubectl -n kube-system get secret/$SECRET \
 kubectl config set-cluster ${CLUSTER_NAME} \
   --certificate-authority=/etc/kubernetes/pki/ca.crt \
   --embed-certs=true \
-  --server=${1} \
+  --server=${KUBE_APISERVER} \
   --kubeconfig=/etc/kubernetes/${KUBE_CONFIG}
 
 kubectl config set-context ${CLUSTER_NAME} \
