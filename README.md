@@ -16,7 +16,7 @@
 系统可采用`Ubuntu 16.x`(未完成)与`CentOS 7.x`(CentOS建议使用最新的)
 本次安裝的版本：
 > * Kubernetes v1.13.4 (HA高可用)
-> * CNI plugins v0.7.1
+> * CNI plugins v0.7.5
 > * Etcd v3.3.12
 > * flanneld v0.11.0
 > * Calico v3.0.4(未写完)
