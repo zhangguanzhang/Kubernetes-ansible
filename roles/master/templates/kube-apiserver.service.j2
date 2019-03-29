@@ -6,7 +6,7 @@ After=network.target
 [Service]
 ExecStart=/usr/local/bin/kube-apiserver \
   --authorization-mode=Node,RBAC \
-  --enable-admission-plugins=Initializers,DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceLifecycle,NodeRestriction,PersistentVolumeClaimResize,ResourceQuota,ServiceAccount,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,Priority \
+  --enable-admission-plugins=Initializers,DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,NamespaceLifecycle,NodeRestriction,PersistentVolumeClaimResize,ResourceQuota,ServiceAccount,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,Priority,PodPreset \
   --advertise-address={{ apiserver.advertiseAddress }} \
   --bind-address={{ apiserver.bind }}  \
   --insecure-port=0 \
