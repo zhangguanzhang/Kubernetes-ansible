@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
+
 :  ${bak_dir:=/root/} #缺省备份目录,可以修改成存在的目录
 
 bak_prefix='etcd-'
