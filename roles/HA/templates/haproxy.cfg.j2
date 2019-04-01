@@ -41,8 +41,9 @@ frontend k8s-api
 backend k8s-api
   mode tcp
   option tcplog
-  option tcp-check
+  option httpchk GET /healthz
+  http-check expect string ok
   balance roundrobin
-  default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 weight 100
-{% for host in groups['master'] %}    server  api{{ loop.index }}  {{ hostvars[host].inventory_hostname }}:6443  check inter 2000 fall 2 rise 2 weight 1
+  default-server inter 2s downinter 2s rise 1 fall 2 slowstart 60s maxconn 500 maxqueue 256 weight 100
+{% for host in groups['master'] %}    server  api{{ loop.index }}  {{ hostvars[host].inventory_hostname }}:6443  check check-ssl verify none
 {% endfor %}
