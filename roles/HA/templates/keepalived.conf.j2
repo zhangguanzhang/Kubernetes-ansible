@@ -16,7 +16,7 @@ vrrp_instance haproxy-vip {
     unicast_peer {
 {% for host in groups['master'] %}{% if host != inventory_hostname %}
         {{ host }}
-{% endfor %}
+{% endif %}{% endfor %}
     }
 
     virtual_ipaddress {
