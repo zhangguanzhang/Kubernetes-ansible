@@ -1,5 +1,5 @@
 #!/bin/bash
-:  ${KUBE_VERSION:=v1.13.4} ${CNI_VERSION:=v0.7.5} ${ETCD_version:=v3.3.12} ${FLANNEL_version:=v0.11.0}
+:  ${KUBE_VERSION:=v1.13.4} ${CNI_VERSION:=v0.7.5} ${ETCD_version:=v3.2.24} ${FLANNEL_version:=v0.11.0}
 :  ${CNI_URL:=https://github.com/containernetworking/plugins/releases/download}
 
 function down_kube(){
@@ -21,9 +21,14 @@ function down_etcd(){
 
 function down_flanneld(){
 # https://github.com/coreos/flannel/releases
-    [ ! -f "flannel-${FLANNEL_version}-linux-amd64.tar.gz" ] && \
-        wget https://github.com/coreos/flannel/releases/download/${FLANNEL_version}/flannel-${FLANNEL_version}-linux-amd64.tar.gz
-    [ ! -f /usr/local/bin/flanneld ] && tar -zxvf flannel-${FLANNEL_version}-linux-amd64.tar.gz -C /usr/local/bin flanneld
+
+#    [ ! -f "flannel-${FLANNEL_version}-linux-amd64.tar.gz" ] && \
+#        wget https://github.com/coreos/flannel/releases/download/${FLANNEL_version}/flannel-${FLANNEL_version}-linux-amd64.tar.gz
+#    [ ! -f /usr/local/bin/flanneld ] && tar -zxvf flannel-${FLANNEL_version}-linux-amd64.tar.gz -C /usr/local/bin flanneld
+    docker pull zhangguanzhang/quay.io.coreos.flannel:${FLANNEL_version}-amd64
+    docker run --rm -d --name flanneld zhangguanzhang/quay.io.coreos.flannel:${FLANNEL_version}-amd64 sleep 10
+    docker cp flanneld:/opt/bin/flanneld /usr/local/bin/
+
 }
 
 function down_cni(){

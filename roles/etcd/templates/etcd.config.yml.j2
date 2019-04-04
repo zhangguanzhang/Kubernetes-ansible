@@ -2,7 +2,7 @@ name: '{{ clusterName  }}'
 data-dir: {{ etcd.dataDir }}
 wal-dir: {{ etcd.dataDir }}/wal
 auto-compaction-mode: periodic
-auto-compaction-retention: "1"
+auto-compaction-retention: 1
 snapshot-count: 5000
 heartbeat-interval: 100
 election-timeout: 1000

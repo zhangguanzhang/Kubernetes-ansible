@@ -36,8 +36,8 @@ nodeStatusUpdate: Medium
 
 
 CLUSTER_NAME: 'kubernetes'
-KUBE_VERSION: 'v1.13.4'
-ETCD_version: 'v3.3.12'
+KUBE_VERSION: 'v1.13.5'
+ETCD_version: 'v3.2.24'
 
 Net_Choose: flannel  # 暂时只有flannel,后续增加其他的
 
