@@ -10,6 +10,7 @@
  * 2019/03/20 - 增加管理组件可选日志写入文件和logrotate配置,添加增加node剧本
  * 2019/03/21 - 增加有备份db文件下一键恢复etcd集群剧本
  * 2019/03/26 - 增加etcd备份脚本
+ * 2019/04/04 - 修改haproxy为七层check,优化和向后兼容apiserver和etcd配置文件
 
 ## ansible部署Kubernetes
 
