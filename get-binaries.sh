@@ -1,5 +1,5 @@
 #!/bin/bash
-:  ${KUBE_VERSION:=v1.13.4} ${CNI_VERSION:=v0.7.5} ${ETCD_version:=v3.2.24} ${FLANNEL_version:=v0.11.0}
+:  ${KUBE_VERSION:=v1.13.5} ${CNI_VERSION:=v0.7.5} ${ETCD_version:=v3.2.24} ${FLANNEL_version:=v0.11.0}
 :  ${CNI_URL:=https://github.com/containernetworking/plugins/releases/download}
 
 function down_kube(){
