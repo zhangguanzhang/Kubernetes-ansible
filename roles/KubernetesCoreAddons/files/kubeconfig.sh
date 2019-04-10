@@ -31,4 +31,5 @@ kubectl config set-context ${CLUSTER_NAME} \
 kubectl config set-credentials ${CLUSTER_NAME} --token=${JWT_TOKEN} --kubeconfig=/etc/kubernetes/${KUBE_CONFIG}
 
 kubectl config use-context ${CLUSTER_NAME} --kubeconfig=/etc/kubernetes/${KUBE_CONFIG}
+
 kubectl config view --kubeconfig=/etc/kubernetes/${KUBE_CONFIG}

@@ -6,9 +6,6 @@
 
 - file: name=/etc/kubernetes/pki/etcd state=directory
 
-- name: 渲染ip到openssl配置文件
-  template: src=templates/openssl.cnf.j2 dest=/etc/kubernetes/pki/openssl.cnf
-
 - name: 生成kubeconfig
   include_tasks: 
     file: tls.yml

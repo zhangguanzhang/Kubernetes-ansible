@@ -47,4 +47,5 @@
         - { src: 'kube-proxy.conf.j2', dest: '/etc/kubernetes/' }
     - name: 开机并启动kube-proxy
       systemd: name=kube-proxy state=started enabled=yes daemon_reload=yes
+      when: not ( redo | default(false) )
   when: proxy.bin

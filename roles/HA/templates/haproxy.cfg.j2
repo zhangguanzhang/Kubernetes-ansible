@@ -45,5 +45,5 @@ backend k8s-api
   http-check expect string ok
   balance roundrobin
   default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 weight 100
-{% for host in groups['master'] %}    server  api{{ loop.index }}  {{ hostvars[host].inventory_hostname }}:6443  check check-ssl verify none
+{% for host in groups['Master'] %}    server  api{{ loop.index }}  {{ hostvars[host].inventory_hostname }}:6443  check check-ssl verify none
 {% endfor %}

@@ -2,7 +2,6 @@
 ansible_ssh_port: 22
 ansible_ssh_pass: zhangguanzhang
 
-docker_version: '18.06'
 ntp_domain1: 'cn.pool.ntp.org'
 ntp_domain2: 's1b.time.edu.cn'
 TimeZone: 'Asia/Shanghai'
@@ -11,6 +10,25 @@ kernel: true
 VIP: '172.16.1.240'
 VIP_NETMASK: 24
 INTERFACE_NAME: eth0
+
+# 后续考虑扩etcd或者master的话可以填写下面预留ip写在证书里
+#certSANs:
+#  apiServer:
+#    - 100.64.2.50
+#    - 100.64.2.51
+#  etcd:
+#    - 100.64.2.51
+
+docker:
+  version: '18.06'
+  dataDir: /var/lib/docker
+  execOpts:
+    - 'native.cgroupdriver=systemd'
+  registryMirrors:
+    - https://fz5yth0r.mirror.aliyuncs.com
+#  insecureRegistries:
+#    - 100.64.2.52:9999
+#    - 100.64.1.31:9999
 
 etcd:
   dataDir: /var/lib/etcd

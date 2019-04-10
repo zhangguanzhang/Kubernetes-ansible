@@ -11,6 +11,7 @@
  * 2019/03/21 - 增加有备份db文件下一键恢复etcd集群剧本
  * 2019/03/26 - 增加etcd备份脚本
  * 2019/04/04 - 修改haproxy为七层check,优化和向后兼容apiserver和etcd配置文件
+ * 2019/04/10 - 增加证书ip预留和增加master剧本
 
 ## ansible部署Kubernetes
 
@@ -60,7 +61,7 @@ pip install ansible
 ```
 yum install wget -y 1 > /dev/null
 wget https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.7.8-1.el7.ans.noarch.rpm
-yum localinstall ansible-2.5.4-1.el7.ans.noarch.rpm -y
+yum localinstall ansible-2.7.8-1.el7.ans.noarch.rpm -y
 ```
 
 **1 git clone**
@@ -75,9 +76,9 @@ cd Kubernetes-ansible
 
  * 修改`group_vars/all.yml`里面的参数
  1. ansible_ssh_pass为ssh密码(如果每台主机密码不一致请注释掉`all.yml`里的`ansible_ssh_pass`后按照的`hosts`文件里的注释那样写上每台主机的密码）
- 2. `VIP`为高可用HA的虚ip,和master在同一个网段没有被使用过的ip即可,`NETMASK`为VIP的掩码
+ 2. `VIP`为高可用HA的虚ip,和master在同一个网段没有被使用过的ip即可,`NETMASK`为VIP的掩码,certSANs是预留ip后续扩节点
  3. `INTERFACE_NAME`为各机器的ip所在网卡名字Centos可能是`ens33`或`eth0`,如果业务做了bond是bond后的网卡,看情况自行修改.测试vip可用度是某台机器手动添加`ip addr add/del $VIP/$MASK dev $interface`后其他机器手动ping下
- 4. 其余的参数按需修改,不熟悉最好别乱改
+ 4. 其余的参数按需修改,不熟悉最好别乱改,`roles/node/templates/kubelet-conf.yml.j2`里可以修改下gc和预留资源
  5. 涉及到一些集群更新状态的参数参考 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/kubernetes-reliability.md 
  6. `nodeStatusUpdate`变量对应下面的三种+默认值任选其一,单独选项的值优先级高`nodeStatusUpdate`,
 
@@ -180,5 +181,8 @@ k8s-n2   Ready    <none>   6s    v1.13.4   172.16.1.7    <none>        CentOS Li
 
 ![k8s2](https://raw.githubusercontent.com/zhangguanzhang/Image-Hosting/master/k8s/kube-ansible2.png)
 
+**7 增加master**
+ *ca文件还在就能增加,增加的时候可能会有空窗期,理论上我写成滚动了,但是会丢一些apiserver的session,没事不要尝试扩master
+ *`Master`下面子组取消newMaster的注释,newMaster组取消注释填上信息,然后执行`ansible-playbook preRedo.yml`设置新机器的系统设置,然后执行`ansible-playbook redo.yml`
 
-后面的一些Extraaddon后续更新
+后面的一些Extraaddon后续更新(当然也别等我更新,集群到node那了所谓的coredns和flannel后就可以用可以去找官方的addon部署)

@@ -1,5 +1,5 @@
 - include_tasks: master.yml
-  when: inventory_hostname in groups['master']
+  when: inventory_hostname in groups['Master']
 
 
 
@@ -14,7 +14,7 @@
   delay: 4
   connection: local
   ignore_errors: True
-
+  when: not ( redo | default(false) )
 
 - name: 等待kubectl能操作集群
   shell: kubectl get cs
@@ -26,6 +26,7 @@
   ignore_errors: true
   run_once: true
   delegate_to: "{{ groups['master'][0] }}"
+  when: not ( redo | default(false) )
 
 #- name: 修改kubernetes ep
 #  shell: |

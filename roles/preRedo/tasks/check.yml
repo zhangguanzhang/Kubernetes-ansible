@@ -1,0 +1,6 @@
+- stat: path={{ out_item }}
+  register: need_file
+
+- fail: msg=当前主机缺失文件{{ out_item }}
+  when: not need_file.stat.exists
+  

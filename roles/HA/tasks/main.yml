@@ -4,20 +4,23 @@
 - name: 安装keepalived
   include_tasks: keepalived.yml
 
-- name: 启动haproxy keepalived
-  systemd:
-    name: "{{ item }}"
-    enabled: yes
-    state: started
-  with_items:
-    - keepalived
-    - haproxy
 
-- wait_for: 
-    host: "{{ VIP }}"
-    delay: 10
-    port: 22
-  connection: local
+- block:
+    - name: 启动haproxy keepalived
+      systemd:
+        name: "{{ item }}"
+        enabled: yes
+        state: restarted
+      with_items:
+        - keepalived
+        - haproxy
+    
+    - wait_for: 
+        host: "{{ VIP }}"
+        delay: 10
+        port: 22
+      connection: local
+  when: not ( redo | default(false) )
 
 #- name: ping测试VIP
 #  net_ping:

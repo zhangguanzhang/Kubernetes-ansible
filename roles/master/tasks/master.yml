@@ -28,9 +28,10 @@
 
 
 - name: 分发证书
-  copy: src={{ item }} dest=/etc/kubernetes/pki/
-  with_fileglob:
-    - '/etc/kubernetes/pki/*'
+  copy: src={{ item.src }} dest={{item.src}}
+  with_filetree:
+    - '/etc/kubernetes/pki/'
+  when: item.state == 'file' and not item.src | search("kubelet-client.*")
 
 - name: 配置管理组件的systemd文件
   template: src={{ item }} dest=/usr/lib/systemd/system/{{ item.split('.')[:-1]|join('.') }}
@@ -80,4 +81,4 @@
     - kube-apiserver
     - kube-controller-manager
     - kube-scheduler
-
+  when: not ( redo | default(false) )

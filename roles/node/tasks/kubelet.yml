@@ -6,6 +6,11 @@
     - /var/lib/kubelet/
     - /opt/cni/bin/
 
+- name: 删除老旧的kubelet认证文件
+  file: name={{ item }} state=absent
+  with_fileglob:
+    - "/etc/kubernetes/pki/kubelet-client-*"
+
 - name: 分发cni二进制文件
   unarchive:
     src: "{{ item }}"

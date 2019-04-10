@@ -8,7 +8,7 @@
       command: kubectl apply -f /etc/kubernetes/CoreAddons/kube-flannel.yml
   delegate_to: "{{ groups['master'][0] }}"
   run_once: true
-  when: not flanneld.bin and ( not newNode | default('false') )
+  when: not flanneld.bin and ( not newNode | default(false) )
 
 
 - block:
@@ -48,4 +48,5 @@
     
     - name: 开机并启动flanneld
       systemd: name=flanneld state=restarted enabled=yes daemon_reload=yes
+      when: not ( redo | default(false) )
   when: flanneld.bin

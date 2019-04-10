@@ -1,3 +1,6 @@
+{% if certSANs is undefined %}
+{% set certSANs = {"apiServer":[],"etcd":[]} %}
+{% endif%}
 [ req ]
 default_bits = 2048
 default_md = sha256
@@ -39,12 +42,20 @@ DNS.4 = kubernetes.default.svc.{{ ClusterDomain }}
 DNS.5 = localhost
 IP.1 = {{ KubernetesClusterSVCIP }}
 IP.2 = 127.0.0.1
-{% for host in groups['all'] %}IP.{{ loop.index + 2 }} = {{ hostvars[host].inventory_hostname }}
+{% if certSANs['apiServer'] | length > 0 %}
+{% for host in certSANs.apiServer %}IP.{{ loop.index + 2 }} = {{ host }}
 {% endfor %}
-{% if groups['master'] | length !=1 %}IP.{{ groups['all'] | length + 3}} = {{ VIP }}{% endif %}
+{% endif %}
+{% for host in groups['all'] %}IP.{{ certSANs['apiServer']  | length + loop.index + 2 }} = {{ hostvars[host].inventory_hostname }}
+{% endfor %}
+{% if groups['master'] | length !=1 %}IP.{{ groups['all'] | length + certSANs['apiServer'] | length + 3}} = {{ VIP }}{% endif %}
 
 [ alt_names_etcd ]
 DNS.1 = localhost
 IP.1 = 127.0.0.1
 {% for host in groups['etcd'] | union(groups['master']) %}IP.{{ loop.index + 1 }} = {{ hostvars[host].inventory_hostname }}
 {% endfor %}
+{% if certSANs['etcd']  | length > 0  %}
+{% for host in certSANs.etcd %}IP.{{ loop.index + 1 + groups['etcd'] | union(groups['master']) | length }} = {{ host }}
+{% endfor %}
+{% endif %}

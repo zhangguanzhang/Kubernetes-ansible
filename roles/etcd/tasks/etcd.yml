@@ -20,21 +20,14 @@
   with_items:
     - /usr/local/bin/etcd
     - /usr/local/bin/etcdctl
-
-- name: 分发etcd systemd文件
-  copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-  with_items:
-  - { src: '/usr/local/bin/etcd', dest: '/usr/local/bin/etcd' }
-  - { src: '/usr/local/bin/etcdctl', dest: '/usr/local/bin/etcdctl' }
   
 - name: 分发etcd证书
   copy: src={{ item }} dest=/etc/kubernetes/pki/etcd/
   with_fileglob:
     - '/etc/kubernetes/pki/etcd/*'
 
-- template: src=templates/{{ item.src }} dest={{ item.dest }}/{{ item.src.split('.')[:-1]|join('.') }}
+- name: 分发etcd配置文件和systemd文件
+  template: src=templates/{{ item.src }} dest={{ item.dest }}/{{ item.src.split('.')[:-1]|join('.') }}
   with_items:
   - { src: 'etcd.config.yml.j2', dest: '/etc/etcd' }
   - { src: 'etcd.service.j2', dest: '/usr/lib/systemd/system' }
@@ -52,3 +45,4 @@
     state: restarted 
     enabled: yes 
     daemon_reload: yes
+  when: not ( redo | default(false) )

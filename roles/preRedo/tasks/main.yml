@@ -1,0 +1,9 @@
+- name: 检查必要的crt和key存在否
+  include_tasks: check.yml
+  loop_control:
+    loop_var: out_item
+  loop: "{{ files }}"
+  when: ( redo | default(false) ) 
+  connection: local
+  run_once: true
+

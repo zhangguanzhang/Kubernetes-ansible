@@ -14,7 +14,7 @@ vrrp_instance haproxy-vip {
     advert_int 3
     unicast_src_ip {{ inventory_hostname }}
     unicast_peer {
-{% for host in groups['master'] %}{% if host != inventory_hostname %}
+{% for host in groups['Master'] %}{% if host != inventory_hostname %}
         {{ host }}
 {% endif %}{% endfor %}
     }

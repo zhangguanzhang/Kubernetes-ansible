@@ -2,13 +2,17 @@
   copy: src=files/docker-ce.repo dest=/etc/yum.repos.d/
 
 - shell: |
-    yum list --showduplicates 'docker-ce' | awk  '/'{{ docker_version }}'.*el/{a=$2}END{print a}'
+    yum list --showduplicates 'docker-ce' | awk  '/'{{ docker.version }}'.*el/{a=$2}END{print a}'
   register: docker_ce
   run_once: true
   delegate_to: "{{ groups['master'][0] }}"
   args:
     warn: false
 
+- name: 检查指定版本docker-ce安装否
+  yum: list=docker-ce-{{ docker_ce.stdout }}
+  register: pkg
 - name: 安装docker-ce
   yum:
     name: docker-ce-{{ docker_ce.stdout }}
+  when: pkg.results | selectattr("yumstate", "match", "installed") | list | length == 0

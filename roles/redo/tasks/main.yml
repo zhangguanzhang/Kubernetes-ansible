@@ -1,0 +1,38 @@
+- name: 检查必要的crt和key存在否
+  include_tasks: check.yml
+  loop_control:
+    loop_var: out_item
+  loop: "{{ files }}"
+  when: ( redo | default(false) ) 
+  connection: local
+  run_once: true
+
+- include_role:
+    name : setup
+    apply:
+  when: 
+
+
+- name: 停止所有节点kubelet
+  systemd: name=etcd state=stopped
+  when: inventory_hostname in groups['Allnode'] and ( redoAll | default(false) )  # 换vip或者所有ip的时候带上-e redoAll=true才会执行
+
+- name: 停止etcd
+  systemd: name=etcd state=stopped
+  when: inventory_hostname in groups['etcd']
+
+- name: 停止master上的k8s相关进程
+  systemd: name={{ item }} state=stoppped
+  when: inventory_hostname in groups['master']
+  loop:
+    - kube-scheduler
+    - kube-controller-manager
+    - kube-apiserver
+
+
+- name: 停止master上的k8s相关进程
+  systemd: name={{ item }} state=stoppped
+  when: inventory_hostname in groups['master'] and ( redoAll | default(false) )  # 换vip或者所有ip的时候带上-e redoAll=true才会执行
+  loop:
+    - keepalived
+    - haproxy

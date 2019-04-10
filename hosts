@@ -19,6 +19,14 @@
 
 
 
+#[newMaster]
+#172.16.1.12 hostname=k8s-m4 nodename=k8s-m4
+
+[Master:children]
+master
+#newMaster
+
+
 [Allnode:children]
 master
 node

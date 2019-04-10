@@ -1,6 +1,10 @@
+- name: 检查haproxy安装否
+  yum: list=keepalived
+  register: pkg
+
 - name: 安装haproxy 
   yum: name=haproxy  state=latest
-  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+  when: ( ansible_distribution == "CentOS" or ansible_distribution == "RedHat" ) and pkg.results | selectattr("yumstate", "match", "installed") | list | length == 0
 
 - name: 安装haproxy
   package: name=haproxy  state=latest
