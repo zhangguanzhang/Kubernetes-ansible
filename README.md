@@ -181,7 +181,7 @@ k8s-n2   Ready    <none>   6s    v1.13.4   172.16.1.7    <none>        CentOS Li
 
 ![k8s2](https://raw.githubusercontent.com/zhangguanzhang/Image-Hosting/master/k8s/kube-ansible2.png)
 
-**7 增加master**
+**7 增加master(没事不要随便扩master)**
  * ca文件还在就能增加,增加的时候可能会有空窗期,理论上我写成滚动了,但是会丢一些apiserver的session,没事不要尝试扩master
  * `Master`下面子组取消newMaster的注释,newMaster组取消注释填上信息,然后执行`ansible-playbook preRedo.yml`设置新机器的系统设置,然后执行`ansible-playbook redo.yml`
  * 步骤是检查ca文件存在否,设置新机器系统设置重启，然后安装docker和剧本复用生成证书发送证书，重启进程
