@@ -6,7 +6,7 @@
     
     - command: kubectl apply -f /etc/kubernetes/CoreAddons/kube-proxy.yml
       delegate_to: "{{ groups['master'][0] }}"
-  when: not proxy.bin and ( not newNode | default('false') )
+  when: not proxy.bin and ( not newNode | default(false) )
 
 - block:
     - name: 部署Kube-proxy
