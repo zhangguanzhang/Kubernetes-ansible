@@ -187,3 +187,6 @@ k8s-n2   Ready    <none>   6s    v1.13.4   172.16.1.7    <none>        CentOS Li
  * 步骤是检查ca文件存在否,设置新机器系统设置重启，然后安装docker和剧本复用生成证书发送证书，重启进程
 
 后面的一些Extraaddon后续更新(当然也别等我更新,集群到node那了所谓的coredns和flannel后就可以用可以去找官方的addon部署)
+
+[ingress nginx部署](http://www.servicemesher.com/blog/kubernetes-ingress-controller-deployment-and-ha/)
+[dashboard部署](http://www.servicemesher.com/blog/general-kubernetes-dashboard/)

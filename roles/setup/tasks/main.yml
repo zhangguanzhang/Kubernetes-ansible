@@ -25,7 +25,7 @@
 - name: 分发sysctl文件
   template:
     src: k8s-sysctl.conf.j2
-    dest: /etc/sysctl.d/
+    dest: /etc/sysctl.d/k8s-sysctl.conf
 
 - name: enable --now systemd-modules-load
   systemd:
