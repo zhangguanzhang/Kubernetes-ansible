@@ -1,3 +1,5 @@
+#!/bin/bash
+set -e
 [ -z "$1" ] && { 
     KUBE_APISERVER=`kubectl config view  --output=jsonpath='{.clusters[].cluster.server}' | head -n1 `
 } || KUBE_APISERVER=$1
