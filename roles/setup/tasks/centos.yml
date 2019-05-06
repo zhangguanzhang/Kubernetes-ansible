@@ -39,6 +39,7 @@
       - net-tools
       - crontabs
       - sysstat
+      - unzip
       - bind-utils
       - ntp
       - wget

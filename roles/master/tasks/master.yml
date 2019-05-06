@@ -31,7 +31,7 @@
   copy: src={{ item.src }} dest={{item.src}}
   with_filetree:
     - '/etc/kubernetes/pki/'
-  when: item.state == 'file' and not item.src | search("/kubelet-client.*")
+  when: item.state == 'file' and not item.src is search("/kubelet-client.*")
 
 - name: 配置管理组件的systemd文件
   template: src={{ item }} dest=/usr/lib/systemd/system/{{ item.split('.')[:-1]|join('.') }}

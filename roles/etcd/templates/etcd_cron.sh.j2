@@ -4,6 +4,8 @@ set -e
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
 
 :  ${bak_dir:=/root/} #缺省备份目录,可以修改成存在的目录
+:  ${cert_dir:=/etc/kubernetes/pki/etcd/}
+
 
 bak_prefix='etcd-'
 cmd_suffix='date +%Y-%m-%d-%H:%M'
@@ -51,18 +53,18 @@ done
 
 function etcd_v2(){
 
-    etcdctl --cert-file /etc/kubernetes/pki/etcd/healthcheck-client.crt --key-file \
-        /etc/kubernetes/pki/etcd/healthcheck-client.key \
-        --ca-file /etc/kubernetes/pki/etcd/ca.crt \
+    etcdctl --cert-file $cert_dir/healthcheck-client.crt \
+            --key-file  $cert_dir/healthcheck-client.key \
+            --ca-file   $cert_dir/ca.crt \
         --endpoints {% for host in groups['etcd'] %}https://{{ hostvars[host].inventory_hostname }}:2379{% if not loop.last %},{% endif %}{% endfor %} $@
 }
 
 function etcd_v3(){
 
     ETCDCTL_API=3 etcdctl   \
-       --cert /etc/kubernetes/pki/etcd/healthcheck-client.crt \
-       --key /etc/kubernetes/pki/etcd/healthcheck-client.key \
-       --cacert /etc/kubernetes/pki/etcd/ca.crt \
+       --cert $cert_dir/healthcheck-client.crt \
+       --key  $cert_dir/healthcheck-client.key \
+       --cacert $cert_dir/ca.crt \
        --endpoints {% for host in groups['etcd'] %}https://{{ hostvars[host].inventory_hostname }}:2379{% if not loop.last %},{% endif %}{% endfor %} $@
 }
 
