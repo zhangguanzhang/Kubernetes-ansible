@@ -29,7 +29,7 @@
 
 **因为kubeadm扣的步骤,路径九成九一致,剧本里路径不给自定义**
 
-**HA是基于VIP,无法用于云上(测试过青云默认解除ip和mac绑定可以飘VIP,阿里不行,存在ip和mac绑定,所以flannel的host-gw应该也用不了),阿里四层SLB也有问题**
+**HA是基于VIP,无法用于云上(测试过青云默认解除ip和mac绑定可以飘VIP(同时青云的话记得注释掉setup/tasks/centos.yml里的NetworkManager那行),阿里不行,存在ip和mac绑定,所以flannel的host-gw应该也用不了),阿里四层SLB也有问题**
 
 安装过程是参考的[Kubernetes v1.13.4 HA全手动苦工安装教学](https://zhangguanzhang.github.io/2019/03/03/kubernetes-1-13-4)
 
