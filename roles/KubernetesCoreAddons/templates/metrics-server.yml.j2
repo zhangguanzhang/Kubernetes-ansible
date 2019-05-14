@@ -76,10 +76,6 @@ spec:
         k8s-app: metrics-server
     spec:
       serviceAccountName: metrics-server
-      volumes:
-      # mount in tmp so we can safely use from-scratch images and/or read-only containers
-      - name: tmp-dir
-        emptyDir: {}
       containers:
       - name: metrics-server
         image: zhangguanzhang/gcr.io.google_containers.metrics-server-amd64:{{ metrics_version }}
@@ -90,6 +86,16 @@ spec:
         volumeMounts:
         - name: tmp-dir
           mountPath: /tmp
+        - name: host-time
+          mountPath: /etc/localtime
+          readOnly: true
+      volumes:
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+        # mount in tmp so we can safely use from-scratch images and/or read-only containers
+        - name: tmp-dir
+          emptyDir: {}
 
 ---
 apiVersion: v1

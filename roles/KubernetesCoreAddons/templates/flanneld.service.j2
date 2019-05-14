@@ -15,7 +15,7 @@ RestartSec=5
 # Note that we don't specify any etcd option. This is because we want to talk
 # to the apiserver instead. The apiserver then talks to etcd on flannel's
 # behalf.
-Environment=NODE_NAME={{ nodename }}
+Environment=NODE_NAME={{ nodename | lower }}
 ExecStart=/usr/local/bin/flanneld \
   --kube-subnet-mgr=true \
   --kubeconfig-file=/etc/kubernetes/flanneld.kubeconfig \
