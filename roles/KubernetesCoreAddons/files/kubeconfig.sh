@@ -4,7 +4,7 @@ set -e
     KUBE_APISERVER=`kubectl config view  --output=jsonpath='{.clusters[].cluster.server}' | head -n1 `
 } || KUBE_APISERVER=$1
 
-kubectl -n kube-system create serviceaccount kube-proxy
+kubectl -n kube-system get sa kube-proxy ||  kubectl -n kube-system create serviceaccount kube-proxy && :
 
 kubectl create clusterrolebinding kubeadm:kube-proxy \
         --clusterrole system:node-proxier \
