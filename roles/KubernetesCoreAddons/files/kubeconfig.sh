@@ -1,10 +1,7 @@
 #!/bin/bash
-set -e
 [ -z "$1" ] && { 
     KUBE_APISERVER=`kubectl config view  --output=jsonpath='{.clusters[].cluster.server}' | head -n1 `
 } || KUBE_APISERVER=$1
-
-set +e
 
 kubectl -n kube-system get sa kube-proxy ||  kubectl -n kube-system create serviceaccount kube-proxy 
 
