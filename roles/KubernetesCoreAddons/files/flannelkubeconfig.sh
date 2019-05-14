@@ -4,7 +4,11 @@ set -e
     KUBE_APISERVER=`kubectl config view  --output=jsonpath='{.clusters[].cluster.server}' | head -n1 `
 } || KUBE_APISERVER=$1
 
-cat << EOF | kubectl apply -f -
+
+set +e
+
+kubectl get clusterrole | grep flanne ||  \
+ cat << EOF | kubectl apply -f -
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
