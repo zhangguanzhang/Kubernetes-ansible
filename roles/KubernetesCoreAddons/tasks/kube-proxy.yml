@@ -24,6 +24,7 @@
       args:
         executable: bash
       connection: local
+      run_once: true
       when: not kubeproxy_file.stat.exists
     
     - name: 创建目录{{ proxy.logrotate.logDir }}/logrotate
