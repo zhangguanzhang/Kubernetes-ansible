@@ -33,6 +33,7 @@
       args:
         executable: bash
       connection: local
+      run_once: true
     
     - name: 分发flanneld.kubeconfig
       copy:
