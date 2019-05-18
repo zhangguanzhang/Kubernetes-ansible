@@ -1,4 +1,9 @@
+global_defs {
+    enable_script_security
+}
+
 vrrp_script haproxy-check {
+    user root
     script "/bin/bash /etc/keepalived/check_haproxy.sh"
     interval 3
     weight -2
