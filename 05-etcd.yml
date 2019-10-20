@@ -1,0 +1,4 @@
+- hosts: "{% if groups['etcd'] is not defined %}master{% else %}etcd{% endif %}"
+  gather_facts: no
+  roles:
+    - etcd

@@ -1,0 +1,5 @@
+---
+- hosts: etcd
+  gather_facts: yes
+  roles:
+    - restoreETCD

@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  vars:
+    files:
+      - /etc/kubernetes/pki/ca.key
+      - /etc/kubernetes/pki/ca.crt
+      - /etc/kubernetes/pki/etcd/ca.key
+      - /etc/kubernetes/pki/etcd/ca.crt
+      - /etc/kubernetes/pki/front-proxy-ca.key
+      - /etc/kubernetes/pki/front-proxy-ca.crt
+    redo: true
+  gather_facts: no
+  roles:
+    - preRedo
+
+
+- hosts: newMaster
+  gather_facts: yes
+  roles:
+    - setup
+

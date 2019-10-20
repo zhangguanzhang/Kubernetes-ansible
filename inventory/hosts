@@ -1,0 +1,31 @@
+# kubelet's node name must be `[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*`
+# nodename used by k8s cluster, you also could use the ip address 
+# nodename to k8s, clusterName to etcd
+[master]
+172.16.1.3 hostname=k8s-m1 nodename=172.16.1.3 clusterName=etcd-001
+172.16.1.4 hostname=k8s-m2 nodename=172.16.1.4 clusterName=etcd-002
+172.16.1.5 hostname=k8s-m3 nodename=172.16.1.5 clusterName=etcd-003
+
+[node]
+172.16.1.6 hostname=k8s-n1 nodename=172.16.1.6
+172.16.1.7 hostname=k8s-n2 nodename=172.16.1.7
+
+#[newMaster]
+#172.16.1.12 hostname=k8s-m4 nodename=k8s-m4
+
+[Master:children]
+master
+#newMaster
+
+[Allnode:children]
+Master
+node
+
+#[newNode]
+#172.16.1.8 hostname=k8s-n3 nodename=172.16.1.8
+#172.16.1.9 hostname=k8s-n4 nodename=172.16.1.9
+
+#如果各台密码和端口不通请按照下面格式填写好并注释掉group_vars/all.yml里的ansible_ssh_pass的那一行
+#[Node]
+#192.168.126.9 ansible_ssh_pass=password ansible_ssh_port=666
+#192.168.126.10 ansible_ssh_pass=password233 ansible_ssh_port=68
