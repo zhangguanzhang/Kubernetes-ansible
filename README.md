@@ -56,7 +56,7 @@ yum localinstall ansible-2.8.5-1.el7.ans.noarch.rpm -y
 
 **1 git clone**
 ```
-git clone --recurse-submodules https://github.com/zhangguanzhang/Kubernetes-ansible.git
+git clone --recurse-submodules https://github.com/zhangguanzhang/Kubernetes-ansible.git -b v1.13
 cd Kubernetes-ansible
 ```
 
