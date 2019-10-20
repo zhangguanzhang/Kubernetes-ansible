@@ -1,0 +1,13 @@
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - stat: 
+      path: /usr/local/bin/flanneld
+    register: flanneld_file
+  - fail: msg='请下载文件,运行脚本`bash get-binaries.sh flanneld`或者自行下载后再运行deploy.yml --tags addon'
+    when: flanneld.bin and not flanneld_file.stat.exists
+
+- hosts: Allnode
+  gather_facts: no
+  roles:
+    - { role: node,                  tags: [node,cni] }

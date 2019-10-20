@@ -1,0 +1,4 @@
+- hosts: Allnode
+  gather_facts: no
+  roles:
+    - { role: CoreAddons,  tags: addon }

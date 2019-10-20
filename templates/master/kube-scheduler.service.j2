@@ -1,0 +1,20 @@
+[Unit]
+Description=Kubernetes Scheduler
+Documentation=https://github.com/kubernetes/kubernetes
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/kube-scheduler \
+  --leader-elect=true \
+  --kubeconfig=/etc/kubernetes/scheduler.kubeconfig \
+  --address={{ scheduler.bind }} \
+{% if scheduler.logrotate.log is defined and scheduler.logrotate.log %}
+  --logtostderr=false \
+  --log-dir={{ scheduler.logrotate.logDir }} \
+{% endif %}
+  --v={{ scheduler.logLevel | default(2)}}
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

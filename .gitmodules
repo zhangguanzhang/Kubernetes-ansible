@@ -1,0 +1,16 @@
+[submodule "roles"]
+	path = roles
+	url = https://github.com/zhangguanzhang/Kubernetes-ansible-base.git
+	branch = roles
+[submodule "scripts"]
+	path = scripts
+	url = https://github.com/zhangguanzhang/Kubernetes-ansible-base.git
+	branch = scripts
+[submodule "tasks"]
+	path = tasks
+	url = https://github.com/zhangguanzhang/Kubernetes-ansible-base.git
+	branch = tasks
+[submodule "templates/common"]
+	path = templates/common
+	url = https://github.com/zhangguanzhang/Kubernetes-ansible-base.git
+	branch = templates

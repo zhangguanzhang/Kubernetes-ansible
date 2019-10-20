@@ -1,0 +1,78 @@
+[Unit]
+Description=Kubernetes Controller Manager
+Documentation=https://github.com/kubernetes/kubernetes
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/kube-controller-manager \
+  --allocate-node-cidrs=true \
+  --authentication-kubeconfig=/etc/kubernetes/controller-manager.kubeconfig \
+  --authorization-kubeconfig=/etc/kubernetes/controller-manager.kubeconfig \
+  --bind-address={{ controllerManager.bind }} \
+  --client-ca-file=/etc/kubernetes/pki/ca.crt \
+  --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt \
+  --cluster-signing-key-file=/etc/kubernetes/pki/ca.key \
+  --kubeconfig=/etc/kubernetes/controller-manager.kubeconfig \
+  --leader-elect=true \
+  --cluster-cidr={{ PodCIDR }} \
+  --service-cluster-ip-range={{ SvcCIDR }} \
+  --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt \
+  --service-account-private-key-file=/etc/kubernetes/pki/sa.key \
+  --root-ca-file=/etc/kubernetes/pki/ca.crt \
+  --use-service-account-credentials=true \
+  --controllers=*,bootstrapsigner,tokencleaner \
+  --experimental-cluster-signing-duration=86700h \
+  --feature-gates=RotateKubeletClientCertificate=true \
+{% if terminatedPodGcThreshold is defined %}
+  --terminated-pod-gc-threshold={{ terminatedPodGcThreshold }} \
+{% endif %}
+  --node-monitor-period=
+{%- if nodeMonitorPeriod is defined -%}
+    {{ nodeMonitorPeriod }}
+{%- else -%}
+    {%- if nodeStatusUpdate == 'Fast' -%}
+        2s
+    {%- else -%}
+        5s
+    {%- endif -%}
+{%- endif %} \
+  --node-monitor-grace-period=
+{%- if nodeMonitorGracePeriod is defined -%}
+    {{ nodeMonitorGracePeriod }}
+{%- else -%}
+    {%- if nodeStatusUpdate == 'Fast' -%}
+             20s
+    {%- elif nodeStatusUpdate == 'Medium' -%}
+             2m
+    {%- elif nodeStatusUpdate == 'Low' -%}
+             5m
+    {%- else -%}
+             40s
+    {%- endif -%}
+{%- endif %} \
+  --pod-eviction-timeout= 
+{%- if podEvictionTimeout is defined -%}
+    {{ podEvictionTimeout }}
+{%- else -%}
+    {%- if nodeStatusUpdate == 'Fast' -%}
+             30s
+    {%- elif nodeStatusUpdate == 'Medium' -%}
+             1m
+    {%- elif nodeStatusUpdate == 'Low' -%}
+             1m
+    {%- else -%}
+             5m
+    {%- endif -%}
+{%- endif %} \
+{% if controllerManager.logrotate.log is defined and controllerManager.logrotate.log %}
+  --logtostderr=false \
+  --log-dir={{ controllerManager.logrotate.logDir }} \
+{% endif %}
+  --v={{ controllerManager.logLevel | default(2) }}
+
+
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
