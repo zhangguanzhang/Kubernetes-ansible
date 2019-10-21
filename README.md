@@ -14,7 +14,7 @@ https://github.com/zhangguanzhang/Kubernetes-ansible/wiki
 > * Etcd v3.3.17
 > * flanneld v0.11.0
 > * Calico (不写,可以自行去找yaml部署)
-> * Docker CE 18.09.09(应该能19.03的)
+> * Docker CE 18.09(应该能19.03的)
 
 
 **ansible hosts文件写ip来支持多网卡部署**
