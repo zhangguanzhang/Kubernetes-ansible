@@ -54,5 +54,5 @@
   gather_facts: no
   roles:
     - { role: node,                  tags: node }
-    - { role: KubernetesCoreAddons,  tags: addon }
+    - { role: CoreAddons,  tags: addon }
 
