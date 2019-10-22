@@ -1,0 +1,7 @@
+- hosts: master
+  gather_facts: yes
+  roles:
+    - master
+  tags:
+    - master
+

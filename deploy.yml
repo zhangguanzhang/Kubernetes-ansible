@@ -1,0 +1,58 @@
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - stat: 
+      path: /usr/local/bin/kubectl
+    register: kubectl_file
+  - fail: msg='请下载文件,运行脚本`bash get-binaries.sh all`或者自行下载后再运行deploy.yml'
+    when: not kubectl_file.stat.exists
+
+- hosts: localhost
+  gather_facts: no
+  roles:
+    - tls
+  tags:
+    - tls
+
+
+- hosts: etcd
+  gather_facts: yes
+  roles:
+    - etcd
+  tags:
+    - etcd
+
+- hosts: master
+  gather_facts: yes
+  roles:
+    - { role: HA, tags: HA, when: "groups['master'] | length  > 1" }
+
+- hosts: master
+  gather_facts: yes
+  roles:
+    - master
+  tags:
+    - master
+
+- hosts: localhost
+  gather_facts: no
+  roles:
+    - bootstrap
+  tags:
+    - bootstrap
+
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - stat: 
+      path: /usr/local/bin/flanneld
+    register: flanneld_file
+  - fail: msg='请下载文件,运行脚本`bash get-binaries.sh flanneld`或者自行下载后再运行deploy.yml --tags addon'
+    when: not flanneld_file.stat.exists
+
+- hosts: Allnode
+  gather_facts: no
+  roles:
+    - { role: node,                  tags: node }
+    - { role: CoreAddons,  tags: addon }
+

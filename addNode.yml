@@ -1,0 +1,26 @@
+---
+
+- hosts: newNode
+  gather_facts: yes
+  tasks:
+  - stat:
+      path: /usr/bin/docker
+    register: docker_cmd
+    tags:
+      - docker
+  - include_role:
+      name : docker
+      apply:
+        tags: 
+          - docker
+    when: not docker_cmd.stat.exists
+    tags:
+      - docker
+
+- hosts: newNode
+  gather_facts: no
+  vars:
+    newNode: true
+  roles:
+    - { role: node,                   tags: node  }
+    - { role: KubernetesCoreAddons,   tags: addon }

@@ -1,0 +1,15 @@
+# 单个master，node数量无所谓
+[master]
+172.16.1.8 hostname=k8s-m1 nodename=k8s-m1
+
+[node]
+172.16.1.9 hostname=k8s-n1 nodename=k8s-n1
+172.16.1.13 hostname=k8s-n2 nodename=k8s-n2
+
+[etcd]
+172.16.1.8
+
+
+[Allnode:children]
+master
+node
