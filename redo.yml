@@ -1,0 +1,89 @@
+---
+- hosts: newMaster
+  gather_facts: yes
+  vars:
+    redo: true
+  roles:
+    - docker
+
+- hosts: Master
+  gather_facts: yes
+  vars:
+    redo: true
+  roles:
+    - HA    #仅仅更新配置文件未重启ha进程
+
+- hosts: localhost
+  gather_facts: no
+  vars:
+    redo: true
+  roles:
+    - tls
+
+- hosts: etcd
+  gather_facts: no
+  tasks:
+  - name: 分发新证书
+    copy: src={{ item }} dest=/etc/kubernetes/pki/etcd/
+    with_fileglob:
+      - '/etc/kubernetes/pki/etcd/*'
+  - name: 重启etcd
+    systemd: name=etcd state=restarted
+
+
+
+- hosts: Master
+  gather_facts: yes
+  vars:
+    redo: true
+  roles:
+    - master
+  
+- hosts: newMaster
+  gather_facts: no
+  vars:
+    newNode: true
+    redo: true
+  roles:
+    - { role: node,                   tags: node  }
+    - { role: KubernetesCoreAddons,   tags: addon }
+
+- hosts: Master
+  gather_facts: no
+  serial: 1
+  tasks:
+  - name: 滚动重启对应进程
+    systemd: name={{ item }} state=restarted daemon_reload=yes enabled=yes
+    with_items:
+      - kube-apiserver
+      - kube-controller-manager
+      - kube-scheduler
+      - haproxy
+      - keepalived
+      - kubelet
+
+- hosts: Master
+  gather_facts: no
+  serial: 1
+  tasks:
+  - name: 滚动重启对应进程
+    systemd: name={{ item }} state=restarted daemon_reload=yes enabled=yes
+    with_items:
+      - kube-proxy
+      - flanneld
+    ignore_errors: True
+
+
+
+
+#- hosts: etcd
+#  vars:
+#    redo: true
+#    db: /root/Kubernetes-ansible/data.db
+#  gather_facts: yes
+#  roles:
+#    - etcd
+#    - restoreETCD
+#  tags:
+#    - etcd
+

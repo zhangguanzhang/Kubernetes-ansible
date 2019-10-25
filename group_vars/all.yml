@@ -1,0 +1,147 @@
+# PASSWD: zhangguanzhang
+ansible_ssh_port: 22
+ansible_ssh_pass: 'zhangguanzhang'
+
+ntp_type: chrony # or ntp
+ntp_servers: 
+  - 'cn.pool.ntp.org'
+  - 's1b.time.edu.cn'
+
+TimeZone: 'Asia/Shanghai'
+kernel: !!bool false      # or change false to true
+
+VIP: '172.16.1.240'
+VIP_NETMASK: 24
+INTERFACE_NAME: eth0
+HA_test_port: 22
+
+# 后续考虑扩etcd或者master的话可以填写下面预留ip写在证书里,这里预留域名做切换ip的保障手段,不要删除
+# don't delete the domain list var
+certSANs:
+  apiServer:
+    - apiserver.k8s.local
+    - apiserver001.k8s.local
+    - apiserver002.k8s.local
+    - apiserver003.k8s.local
+#    - 100.64.2.50
+#    - 100.64.2.51
+  etcd:
+    - etcd001.k8s.local
+    - etcd002.k8s.local
+    - etcd003.k8s.local
+#    - 100.64.2.50
+
+docker:
+  version: '18.09' # choose the version of docker
+  dataDir: /var/lib/docker
+  execOpts:
+    - 'native.cgroupdriver=systemd'
+  registryMirrors:
+    - https://fz5yth0r.mirror.aliyuncs.com
+    - https://registry.docker-cn.com
+    - http://hub-mirror.c.163.com/
+    - https://docker.mirrors.ustc.edu.cn/
+#  insecureRegistries:
+#    - 100.64.2.52:9999
+#    - 100.64.1.31:9999
+
+etcd:
+  dataDir: /var/lib/etcd
+  initialClusterToken: 'etcd-k8s-cluster'
+  backup: 
+    dataDir: /root/etcd_bak/
+    scriptDir: /etc/etcd/
+    count: "4"
+
+#terminatedPodGcThreshold: 12500 #退出pod多少秒删除,默认12500
+
+# kubelet更新自身状态频率 https://github.com/kubernetes-sigs/kubespray/blob/master/docs/kubernetes-reliability.md
+# set one of the Fast | Medium | Low | default
+nodeStatusUpdate: Medium
+#nodeStatusUpdateFrequency: 10s
+#nodeMonitorPeriod: 5s     # 如果改它确保它小于下面的值
+#nodeMonitorGracePeriod: 40s
+#podEvictionTimeout: 5m
+
+
+CLUSTER_NAME: 'kubernetes'
+KUBE_VERSION: 'v1.16.2' # 给ds的yaml用，二进制需要改版本的话改下载脚本而不是这里
+ETCD_version: 'v3.3.17'
+
+Net_Choose: flannel  # 暂时只有flannel,后续增加其他的
+
+flanneld:
+  img: quay.io/coreos/flannel:v0.11.0-amd64
+  bin: !!bool true
+  type: vxlan # or set the value to 'host-gw'
+  healthzPort: 8471
+#  logDir: /var/log/flanneld  # 新版无`log_dir参数`,详情 https://github.com/coreos/flannel/issues/1115
+  logLevel: 2
+
+infra_image: 'gcr.azk8s.cn/google_containers/pause-amd64:3.1'
+KUBE_APISERVER: https://{% if groups['master'] | length !=1 %}{{ VIP }}:8443{% else %}{{ hostvars[groups['master'][0]].inventory_hostname }}:6443{% endif %}
+
+
+# 下面前三个要改就一起改
+SvcCIDR: 10.96.0.0/12
+KubernetesClusterSVCIP: 10.96.0.1 # 默认占据SVC段的第一个ip,用于证书里SAN值
+ClusterDns: 10.96.0.10  #修改SvcCIDR的画确保它的ip在CIDR内
+PodCIDR: 10.244.0.0/16
+ServiceNodePortRange: 30000-32767
+ClusterDomain: cluster.local
+
+
+# 下面的一些变量address和bind要么默认变量bind住宿主机的单张网卡,要么改成0.0.0.0,healthz和metrics一样
+# $vars.logrotate.log为true则日志不走journald而是落地切logrotate控制容量副本
+apiserver:
+  advertiseAddress: "{{ inventory_hostname }}"
+  bind: "{{ inventory_hostname }}"
+  logLevel: 2
+  logrotate:
+    log: true
+    confTemplate: logrotate/kube-apiserver
+    logDir: /var/log/kubernetes/kube-apiserver
+    logSize: 200M
+    logRotate: 7
+controllerManager:
+  bind: 0.0.0.0
+  logLevel: 2
+  logrotate:
+    log: true
+    confTemplate: logrotate/kube-controller-manager
+    logDir: /var/log/kubernetes/kube-controller-manager
+    logSize: 200M
+    logRotate: 7
+scheduler:
+  bind: 0.0.0.0
+  logLevel: 2
+  logrotate:
+    log: true
+    confTemplate: logrotate/kube-scheduler
+    logDir: /var/log/kubernetes/kube-scheduler
+    logSize: 200M
+    logRotate: 7
+proxy:
+  bind: "{{ inventory_hostname }}"
+  healthzBindAddress: "{{ inventory_hostname }}"
+  metricsBindAddress: "{{ inventory_hostname }}"
+  mode: ipvs  # proxy模式 ipvs or iptables
+  bin: true
+  logLevel: 2
+  logrotate:
+    log: true
+    confTemplate: logrotate/kube-proxy
+    logDir: /var/log/kubernetes/kube-proxy
+    logSize: 200M
+    logRotate: 7
+kubelet:
+  bind: "{{ inventory_hostname }}"
+  healthzBindAddress: "{{ inventory_hostname }}"
+  swap: false  # 不希望关闭swap设置成true
+  logLevel: 2
+  logrotate:
+    log: true
+    confTemplate: logrotate/kubelet
+    logDir: /var/log/kubernetes/kubelet
+    logSize: 200M
+    logRotate: 7

@@ -1,0 +1,5 @@
+- hosts: master
+  gather_facts: yes
+  roles:
+    - { role: HA, tags: HA, when: "groups['master'] | length  > 1" }
+
