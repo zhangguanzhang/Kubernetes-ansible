@@ -10,7 +10,7 @@ https://github.com/zhangguanzhang/Kubernetes-ansible/wiki/What-I-did
 
 系统可采用`Ubuntu 16.x`(未完成)与`CentOS 7.x`(建议7.x里使用最新的)
 本次安裝的版本：
-> * Kubernetes v1.15.5 (HA高可用)
+> * Kubernetes v1.15.6 (HA高可用)
 > * CNI plugins v0.8.1
 > * Etcd v3.3.17
 > * flanneld v0.11.0
