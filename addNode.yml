@@ -22,5 +22,5 @@
   vars:
     newNode: true
   roles:
-    - { role: node,                   tags: node  }
-    - { role: KubernetesCoreAddons,   tags: addon }
+    - { role: node,         tags: node  }
+    - { role: CoreAddons,   tags: addon }
