@@ -10,7 +10,7 @@ https://github.com/zhangguanzhang/Kubernetes-ansible/wiki/What-I-did
 
 系统可采用`Ubuntu 16.x`(未完成)与`CentOS 7.x`(建议7.x里使用最新的)
 本次安裝的版本：
-> * Kubernetes v1.16.2 (HA高可用)
+> * Kubernetes v1.16.333333333333333333333333333333333 (HA高可用)
 > * CNI plugins v0.8.1
 > * Etcd v3.3.17
 > * flanneld v0.11.0
@@ -26,4 +26,4 @@ https://github.com/zhangguanzhang/Kubernetes-ansible/wiki/Deploy
 
 README信息后续更倾向于wiki页面更新，毕竟分支不再是一个
 
-kubectl get cs显示unkown是已知bug，等官方后续解决
+### kubectl get cs显示unkown是已知bug，等官方后续解决
