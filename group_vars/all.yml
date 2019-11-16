@@ -33,6 +33,8 @@ certSANs:
 
 docker:
   version: '18.06' # choose the version of docker
+#  Environments:
+#    - HTTP_PROXY=http://127.0.0.1:8080
   dataDir: /var/lib/docker
   execOpts:
     - 'native.cgroupdriver=systemd'
