@@ -51,7 +51,7 @@ etcd:
   dataDir: /var/lib/etcd
   initialClusterToken: 'etcd-k8s-cluster'
   backup: 
-    dataDir: /root/etcd_bak/
+    dataDir: /root/etcd_bak
     scriptDir: /etc/etcd/
     count: "4"
 
