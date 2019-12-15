@@ -32,7 +32,7 @@ certSANs:
 #    - 100.64.2.50
 
 docker:
-  version: '18.09' # choose the version of docker
+  version: '19.03' # choose the version of docker
 #  Environments:
 #    - HTTP_PROXY=http://127.0.0.1:8080
   dataDir: /var/lib/docker
@@ -67,13 +67,13 @@ nodeStatusUpdate: Medium
 
 
 CLUSTER_NAME: 'kubernetes'
-KUBE_VERSION: 'v1.16.3' # 给ds的yaml用，二进制需要改版本的话改下载脚本而不是这里
-ETCD_version: 'v3.3.17'
+KUBE_VERSION: 'v1.17.0' # 给ds的yaml用，二进制需要改版本的话改下载脚本而不是这里
+ETCD_version: 'v3.4.3'
 
 Net_Choose: flannel  # 暂时只有flannel,后续增加其他的
 
 flanneld:
-  img: quay.io/coreos/flannel:v0.11.0-amd64
+  img: quay.azk8s.cn/coreos/flannel:v0.11.0-amd64
   bin: !!bool true
   type: vxlan # or set the value to 'host-gw'
   healthzPort: 8471

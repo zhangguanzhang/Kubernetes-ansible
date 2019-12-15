@@ -29,7 +29,7 @@ ExecStart=/usr/local/bin/kube-apiserver \
   --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt \
   --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key \
   --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname \
-  --runtime-config=api/all,settings.k8s.io/v1alpha1=true \
+  --runtime-config=api/all=true,settings.k8s.io/v1alpha1=true \
   --service-cluster-ip-range={{ SvcCIDR }} \
   --service-node-port-range={{ ServiceNodePortRange }} \
   --service-account-key-file=/etc/kubernetes/pki/sa.pub \
