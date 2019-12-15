@@ -12,7 +12,6 @@ ExecStart=/usr/local/bin/kube-apiserver \
   --insecure-port=0 \
   --secure-port=6443 \
   --allow-privileged=true \
-  --apiserver-count={{ groups['Master'] | length }} \
   --audit-log-maxage=30 \
   --audit-log-maxbackup=3 \
   --audit-log-maxsize=100 \

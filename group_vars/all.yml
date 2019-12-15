@@ -73,7 +73,7 @@ ETCD_version: 'v3.3.17'
 Net_Choose: flannel  # 暂时只有flannel,后续增加其他的
 
 flanneld:
-  img: quay.io/coreos/flannel:v0.11.0-amd64
+  img: quay.azk8s.cn/coreos/flannel:v0.11.0-amd64
   bin: !!bool true
   type: vxlan # or set the value to 'host-gw'
   healthzPort: 8471

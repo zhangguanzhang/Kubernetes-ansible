@@ -7,7 +7,7 @@ After=network.target
 ExecStart=/usr/local/bin/kube-scheduler \
   --leader-elect=true \
   --kubeconfig=/etc/kubernetes/scheduler.kubeconfig \
-  --address={{ scheduler.bind }} \
+  --bind-address={{ scheduler.bind }} \
 {% if scheduler.logrotate.log is defined and scheduler.logrotate.log %}
   --logtostderr=false \
   --log-dir={{ scheduler.logrotate.logDir }} \
