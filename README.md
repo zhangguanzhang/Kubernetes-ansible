@@ -16,6 +16,7 @@ https://github.com/zhangguanzhang/Kubernetes-ansible/wiki/What-I-did
 > * flanneld v0.11.0
 > * Calico (不写,可以自行去找yaml部署)
 > * Docker CE 19.03
+> * docker cg driver为systemd的时候有bug https://github.com/kubernetes/kubernetes/issues/76531#issuecomment-543632711,升级下`containerd.io`到`1.2.10-2+`即可解决
 
 ## 使用指南
 ### 部署前
