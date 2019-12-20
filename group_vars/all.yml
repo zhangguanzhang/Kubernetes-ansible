@@ -32,7 +32,7 @@ certSANs:
 #    - 100.64.2.50
 
 docker:
-  version: '18.09' # choose the version of docker
+  version: '19.03' # choose the version of docker
 #  Environments:
 #    - HTTP_PROXY=http://127.0.0.1:8080
   dataDir: /var/lib/docker
