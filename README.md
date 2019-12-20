@@ -15,7 +15,7 @@ https://github.com/zhangguanzhang/Kubernetes-ansible/wiki/What-I-did
 > * Etcd v3.3.17
 > * flanneld v0.11.0
 > * Calico (不写,可以自行去找yaml部署)
-> * Docker CE 18.09(可以19.03+,自行测试)
+> * Docker CE 19.03
 
 ## 使用指南
 ### 部署前
