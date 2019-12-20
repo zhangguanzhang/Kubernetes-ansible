@@ -1,7 +1,3 @@
-[submodule "scripts"]
-	path = scripts
-	url = https://github.com/zhangguanzhang/Kubernetes-ansible-base.git
-	branch = scripts
 [submodule "tasks"]
 	path = tasks
 	url = https://github.com/zhangguanzhang/Kubernetes-ansible-base.git
@@ -14,3 +10,7 @@
 	path = roles
 	url = https://github.com/zhangguanzhang/Kubernetes-ansible-base
 	branch = roles
+[submodule "scripts"]
+	path = scripts
+	url = https://github.com/zhangguanzhang/Kubernetes-ansible-base
+	branch = scripts
