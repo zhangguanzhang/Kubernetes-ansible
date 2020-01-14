@@ -12,7 +12,7 @@ https://github.com/zhangguanzhang/Kubernetes-ansible/wiki/What-I-did
 本次安裝的版本：
 > * Kubernetes v1.16.4 (HA高可用)
 > * CNI plugins v0.8.1
-> * Etcd v3.3.17
+> * Etcd v3.3.14
 > * flanneld v0.11.0
 > * Calico (不写,可以自行去找yaml部署)
 > * Docker CE 19.03
