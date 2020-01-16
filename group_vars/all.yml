@@ -41,6 +41,8 @@ docker:
   registryMirrors:
     - http://hub-mirror.c.163.com/
     - https://docker.mirrors.ustc.edu.cn/
+    - https://dockerhub.azk8s.cn
+    - https://reg-mirror.qiniu.com
     - https://fz5yth0r.mirror.aliyuncs.com
     - https://registry.docker-cn.com
 #  insecureRegistries:
@@ -67,7 +69,7 @@ nodeStatusUpdate: Medium
 
 
 CLUSTER_NAME: 'kubernetes'
-KUBE_VERSION: 'v1.17.0' # 给ds的yaml用，二进制需要改版本的话改下载脚本而不是这里
+KUBE_VERSION: 'v1.17.1' # 给ds的yaml用，二进制需要改版本的话改下载脚本而不是这里
 ETCD_version: 'v3.4.3'
 
 Net_Choose: flannel  # 暂时只有flannel,后续增加其他的
