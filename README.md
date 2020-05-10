@@ -12,10 +12,13 @@ https://github.com/zhangguanzhang/Kubernetes-ansible/wiki/What-I-did
 本次安裝的版本：
 > * Kubernetes v1.16.7 (HA高可用)
 > * CNI plugins v0.8.1
-> * Etcd v3.3.14
+> * Etcd v3.3.20
 > * flanneld v0.11.0
 > * Calico (不写,可以自行去找yaml部署)
 > * Docker CE 19.03
+
+版本选择建议如果最新版本的小版本号没到5就使用上一个大版本,不要盲目追求新版本
+其次每个版本之间的差异性大多是cs的三个组件的配置参数
 
 ## 使用指南
 ### 部署前
