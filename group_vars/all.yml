@@ -81,7 +81,7 @@ flanneld:
 #  logDir: /var/log/flanneld  # 新版无`log_dir参数`,详情 https://github.com/coreos/flannel/issues/1115
   logLevel: 2
 
-infra_image: 'gcr.azk8s.cn/google_containers/pause-amd64:3.1'
+infra_image: 'zhangguanzhang/pause-amd64:3.2'
 KUBE_APISERVER: https://{% if groups['master'] | length !=1 %}{{ VIP }}:8443{% else %}{{ hostvars[groups['master'][0]].inventory_hostname }}:6443{% endif %}
 
 
