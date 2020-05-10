@@ -39,11 +39,10 @@ docker:
   execOpts:
     - 'native.cgroupdriver=systemd'
   registryMirrors:
-    - http://hub-mirror.c.163.com/
-    - https://docker.mirrors.ustc.edu.cn/
-    - https://dockerhub.azk8s.cn
-    - https://reg-mirror.qiniu.com
     - https://fz5yth0r.mirror.aliyuncs.com
+    - https://docker.mirrors.ustc.edu.cn/
+    - https://reg-mirror.qiniu.com
+    - http://hub-mirror.c.163.com/
     - https://registry.docker-cn.com
 #  insecureRegistries:
 #    - 100.64.2.52:9999
@@ -53,7 +52,7 @@ etcd:
   dataDir: /var/lib/etcd
   initialClusterToken: 'etcd-k8s-cluster'
   backup: 
-    dataDir: /root/etcd_bak
+    dataDir: /opt/etcd_bak
     scriptDir: /etc/etcd/
     count: "4"
 
@@ -69,20 +68,20 @@ nodeStatusUpdate: Medium
 
 
 CLUSTER_NAME: 'kubernetes'
-KUBE_VERSION: 'v1.17.3' # 给ds的yaml用，二进制需要改版本的话改下载脚本而不是这里
-ETCD_version: 'v3.4.3'
+KUBE_VERSION: 'v1.17.5' # 给ds的yaml用，二进制需要改版本的话改下载脚本而不是这里
+ETCD_version: 'v3.4.7'
 
 Net_Choose: flannel  # 暂时只有flannel,后续增加其他的
 
 flanneld:
-  img: quay.azk8s.cn/coreos/flannel:v0.11.0-amd64
+  img: quay.io/coreos/flannel:v0.11.0-amd64
   bin: !!bool true
   type: vxlan # or set the value to 'host-gw'
   healthzPort: 8471
 #  logDir: /var/log/flanneld  # 新版无`log_dir参数`,详情 https://github.com/coreos/flannel/issues/1115
   logLevel: 2
 
-infra_image: 'gcr.azk8s.cn/google_containers/pause-amd64:3.1'
+infra_image: 'zhangguanzhang/pause-amd64:3.2'
 KUBE_APISERVER: https://{% if groups['master'] | length !=1 %}{{ VIP }}:8443{% else %}{{ hostvars[groups['master'][0]].inventory_hostname }}:6443{% endif %}
 
 

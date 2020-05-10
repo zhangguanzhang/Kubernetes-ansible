@@ -13,3 +13,6 @@
 [Allnode:children]
 master
 node
+
+[Master:children]
+master
