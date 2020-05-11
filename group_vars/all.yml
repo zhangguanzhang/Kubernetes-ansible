@@ -40,6 +40,7 @@ docker:
     - 'native.cgroupdriver=systemd'
   registryMirrors:
     - https://fz5yth0r.mirror.aliyuncs.com
+    - https://dockerhub.mirrors.nwafu.edu.cn
     - https://docker.mirrors.ustc.edu.cn/
     - https://reg-mirror.qiniu.com
     - http://hub-mirror.c.163.com/
