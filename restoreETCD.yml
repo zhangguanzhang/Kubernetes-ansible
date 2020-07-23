@@ -1,5 +1,5 @@
 ---
-- hosts: etcd
+- hosts: etcd # 单台恢复这里修改为目标的ip，恢复请参考步骤 https://zhangguanzhang.github.io/2020/07/23/fs-error-fix-k8s-master/#etcd
   gather_facts: yes
   roles:
     - restoreETCD
