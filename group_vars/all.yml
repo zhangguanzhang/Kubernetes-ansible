@@ -69,7 +69,7 @@ nodeStatusUpdate: Medium
 
 
 CLUSTER_NAME: 'kubernetes'
-KUBE_VERSION: 'v1.17.9' # 给ds的yaml用，二进制需要改版本的话改下载脚本而不是这里
+KUBE_VERSION: 'v1.17.11' # 给ds的yaml用，二进制需要改版本的话改下载脚本而不是这里
 ETCD_version: 'v3.4.10'
 
 Net_Choose: flannel  # 暂时只有flannel,后续增加其他的
@@ -82,7 +82,7 @@ flanneld:
 #  logDir: /var/log/flanneld  # 新版无`log_dir参数`,详情 https://github.com/coreos/flannel/issues/1115
   logLevel: 2
 
-infra_image: 'zhangguanzhang/pause-amd64:3.2' # 必须不需要登录就能拉取的镜像，否则会有问题
+infra_image: 'registry.aliyuncs.com/k8sxio/pause-amd64:3.3' # 必须不需要登录就能拉取的镜像，否则会有问题
 KUBE_APISERVER: https://{% if groups['master'] | length !=1 %}{{ VIP }}:8443{% else %}{{ hostvars[groups['master'][0]].inventory_hostname }}:6443{% endif %}
 
 
